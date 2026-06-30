@@ -1,5 +1,5 @@
 {
-  "cdnBase": "https://cdn.jsdelivr.net/gh/fampeh/sayfit-assets@v1.8/",
+  "cdnBase": "https://cdn.jsdelivr.net/gh/fampeh/sayfit-assets@v1.9/",
   "projects": {
     "sculpture": [
       {
@@ -123,6 +123,34 @@
           },
           {
             "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w1.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w2.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w3.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w4.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w5.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w6.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w7.jpg"
+          },
+          {
+            "type": "image",
             "src": "projects/work/sculpture/Death-to-war/w8.jpg"
           },
           {
@@ -136,34 +164,6 @@
           {
             "type": "image",
             "src": "projects/work/sculpture/Death-to-war/w11.jpg"
-          },
-          {
-            "type": "image",
-            "src": "projects/work/sculpture/Death-to-war/w (1).jpg"
-          },
-          {
-            "type": "image",
-            "src": "projects/work/sculpture/Death-to-war/w (2).jpg"
-          },
-          {
-            "type": "image",
-            "src": "projects/work/sculpture/Death-to-war/w (3).jpg"
-          },
-          {
-            "type": "image",
-            "src": "projects/work/sculpture/Death-to-war/w (4).jpg"
-          },
-          {
-            "type": "image",
-            "src": "projects/work/sculpture/Death-to-war/w (5).jpg"
-          },
-          {
-            "type": "image",
-            "src": "projects/work/sculpture/Death-to-war/w (6).jpg"
-          },
-          {
-            "type": "image",
-            "src": "projects/work/sculpture/Death-to-war/w (7).jpg"
           }
         ]
       },
