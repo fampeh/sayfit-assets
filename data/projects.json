@@ -1,5 +1,5 @@
 {
-  "cdnBase": "https://cdn.jsdelivr.net/gh/fampeh/sayfit-assets@main/",
+  "cdnBase": "https://cdn.jsdelivr.net/gh/fampeh/sayfit-assets@v1.6/",
   "projects": {
     "sculpture": [
       {
@@ -29,7 +29,7 @@
           },
           {
             "type": "image",
-            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img13.jpg"
+            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img5.jpg"
           },
           {
             "type": "image",
@@ -42,10 +42,6 @@
           {
             "type": "image",
             "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img4.jpg"
-          },
-          {
-            "type": "image",
-            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img5.jpg"
           },
           {
             "type": "image",
