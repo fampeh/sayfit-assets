@@ -1,5 +1,5 @@
 {
-  "cdnBase": "https://cdn.jsdelivr.net/gh/fampeh/sayfit-assets@v1.7/",
+  "cdnBase": "https://cdn.jsdelivr.net/gh/fampeh/sayfit-assets@v1.8/",
   "projects": {
     "sculpture": [
       {
@@ -14,18 +14,6 @@
           {
             "type": "image",
             "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img1.jpg"
-          },
-          {
-            "type": "image",
-            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img10.jpg"
-          },
-          {
-            "type": "image",
-            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img11.jpg"
-          },
-          {
-            "type": "image",
-            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img12.jpg"
           },
           {
             "type": "image",
@@ -58,6 +46,18 @@
           {
             "type": "image",
             "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img9.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img10.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img11.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img12.jpg"
           }
         ]
       },
@@ -72,7 +72,43 @@
           },
           {
             "type": "image",
-            "src": "projects/work/sculpture/A-slice-of-life/img1.jpg"
+            "src": "projects/work/sculpture/A-slice-of-life/1.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/A-slice-of-life/2.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/A-slice-of-life/3.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/A-slice-of-life/4.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/A-slice-of-life/5.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/A-slice-of-life/6.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/A-slice-of-life/7.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/A-slice-of-life/8.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/A-slice-of-life/9.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/A-slice-of-life/11.jpg"
           }
         ]
       },
@@ -87,7 +123,47 @@
           },
           {
             "type": "image",
-            "src": "projects/work/sculpture/Death-to-war/img1.jpg"
+            "src": "projects/work/sculpture/Death-to-war/w8.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w9.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w10.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w11.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w (1).jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w (2).jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w (3).jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w (4).jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w (5).jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w (6).jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/w (7).jpg"
           }
         ]
       },
