@@ -1,5 +1,5 @@
 {
-  "cdnBase": "https://cdn.jsdelivr.net/gh/fampeh/sayfit-assets@v1.4/",
+  "cdnBase": "https://cdn.jsdelivr.net/gh/fampeh/sayfit-assets@v1.5/",
   "projects": {
     "sculpture": [
       {
@@ -14,6 +14,22 @@
           {
             "type": "image",
             "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img1.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img10.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img11.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img12.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img13.jpg"
           },
           {
             "type": "image",
@@ -46,22 +62,6 @@
           {
             "type": "image",
             "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img9.jpg"
-          },
-          {
-            "type": "image",
-            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img10.jpg"
-          },
-          {
-            "type": "image",
-            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img11.jpg"
-          },
-          {
-            "type": "image",
-            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img12.jpg"
-          },
-          {
-            "type": "image",
-            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/img13.jpg"
           }
         ]
       },
