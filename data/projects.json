@@ -1,0 +1,97 @@
+{
+  "cdnBase": "https://cdn.jsdelivr.net/gh/fampeh/sayfit-assets@v1.2/",
+  "projects": {
+    "sculpture": [
+      {
+        "year": "2024",
+        "title": "2.5 cubic meter of stone",
+        "desc": "A heavier sculptural body with a minimal surface rhythm.",
+        "media": [
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/2.5-cubic-meter-of-stone/cover.jpg"
+          }
+        ]
+      },
+      {
+        "year": "2015",
+        "title": "A slice of life",
+        "desc": "A fusion of micro-tech and classical form, with interactive media inside the project gallery.",
+        "media": [
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/A-slice-of-life/cover.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/A-slice-of-life/img1.jpg"
+          }
+        ]
+      },
+      {
+        "year": "2020",
+        "title": "Death to war",
+        "desc": "A heavier sculptural body with a minimal surface rhythm.",
+        "media": [
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/cover.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Death-to-war/img1.jpg"
+          }
+        ]
+      },
+      {
+        "year": "2024",
+        "title": "Endless elements",
+        "desc": "A heavier sculptural body with a minimal surface rhythm.",
+        "media": [
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/cover.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/img1.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/img2.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/img3.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/img4.jpg"
+          }
+        ]
+      },
+      {
+        "year": "2018",
+        "title": "Postwar",
+        "desc": "A heavier sculptural body with a minimal surface rhythm.",
+        "media": [
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Postwar/cover.jpg"
+          }
+        ]
+      },
+      {
+        "year": "2018",
+        "title": "Rostam & Sohrab",
+        "desc": "A heavier sculptural body with a minimal surface rhythm.",
+        "media": [
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Rostam-&-Sohrab/cover.jpg"
+          }
+        ]
+      }
+    ]
+  }
+}
