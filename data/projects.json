@@ -1,5 +1,5 @@
 {
-  "cdnBase": "https://cdn.jsdelivr.net/gh/fampeh/sayfit-assets@v1.9/",
+  "cdnBase": "https://cdn.jsdelivr.net/gh/fampeh/sayfit-assets@v1.10/",
   "projects": {
     "sculpture": [
       {
@@ -178,19 +178,87 @@
           },
           {
             "type": "image",
-            "src": "projects/work/sculpture/Endless-elements/img1.jpg"
+            "src": "projects/work/sculpture/Endless-elements/1.jpg"
           },
           {
             "type": "image",
-            "src": "projects/work/sculpture/Endless-elements/img2.jpg"
+            "src": "projects/work/sculpture/Endless-elements/2.jpg"
           },
           {
             "type": "image",
-            "src": "projects/work/sculpture/Endless-elements/img3.jpg"
+            "src": "projects/work/sculpture/Endless-elements/3.jpg"
           },
           {
             "type": "image",
-            "src": "projects/work/sculpture/Endless-elements/img4.jpg"
+            "src": "projects/work/sculpture/Endless-elements/4.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/5.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/6.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/7.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/8.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/9.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/10.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/11.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/12.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/13.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/14.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/15.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/16.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/17.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/18.png"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/19.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/sculpture/Endless-elements/Stopmotion.gif"
+          },
+          {
+            "type": "video",
+            "src": "projects/work/sculpture/Endless-elements/VID_20240903_173748.mp4"
           }
         ]
       },
