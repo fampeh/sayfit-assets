@@ -197,34 +197,22 @@
     max-width: 100vw;
   }
 
-  /* ---------------------------------------------------------------------
-     The polygon navigator.
-
-     It used to sit `bottom: 100px; right: -10px`, which on a narrow screen
-     put it straight on top of the project title - the two collided and the
-     text was unreadable. Two rules used to fight over the caption's
-     padding-right (20px vs 50px) trying to make room for it; neither could,
-     because the navigator is 70px wide and absolutely positioned.
-
-     It now sits in the top-right corner of the photograph instead, where
-     there is no text to collide with, and the padding hacks are gone.
-     --------------------------------------------------------------------- */
+  /* The navigator sits where it always has. An attempt to move it into the
+     photograph's corner was tried and reverted on 2026-08-18 - the studio
+     owner preferred the original placement. The caption paddings below exist
+     to keep the project title clear of it; leave them together. */
   .project-slider .polygon-nav {
-    top: 10px;
-    right: 10px;
-    bottom: auto;
-    width: 56px;
-    height: 56px;
+    bottom: 100px;
+    right: -10px;
   }
 
-  .project-slider .polygon-nav svg {
-    width: 56px;
-    height: 56px;
+  .project-slider .project-info {
+    padding-right: 20px;
   }
 
-  /* Thicker, because it is smaller and over a photograph now. */
-  .nav-edge { stroke: rgba(255, 255, 255, 0.45); stroke-width: 2; }
-  .nav-edge.active { stroke: #ffffff; stroke-width: 4; }
+  .project-info {
+    padding-right: 50px;
+  }
 }
 
 /* =============================================================================
@@ -249,12 +237,6 @@
   h2 {
     font-size: 1.4rem;
     letter-spacing: 0.08em;
-  }
-
-  .project-slider .polygon-nav,
-  .project-slider .polygon-nav svg {
-    width: 46px;
-    height: 46px;
   }
 
   .app-tile-body { padding: 16px 16px 18px; }

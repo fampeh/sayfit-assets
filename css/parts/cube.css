@@ -83,18 +83,9 @@ body.float-on .scene.active .scene-float {
   cursor: grab;
 }
 
-/* This short transition is what makes the cube feel fluid under the hand.
-   The rAF loop sets a new angle every frame; the transition smooths between
-   them, so the cube trails your cursor slightly instead of snapping to it.
-   It was removed once during a refactor and the cube immediately felt dry and
-   mechanical - it is not incidental, do not delete it.
-
-   It is switched OFF (via .no-cube-transition, from cube.js) whenever the cube
-   is turning itself under a spring, because two easings stacked on each other
-   turn to mush. */
-.cube { transition: transform 0.2s ease-out; }
-.cube.no-cube-transition { transition: none; }
-
+/* The cube is driven frame by frame from requestAnimationFrame, so it must
+   never have a CSS transition of its own fighting the loop. The one exception
+   is the scripted intro turn. */
 body.cube-intro .cube { transition: transform 1.6s var(--fade-ease); }
 
 .cube:active { cursor: grabbing; }
@@ -103,14 +94,7 @@ body.cube-intro .cube { transition: transform 1.6s var(--fade-ease); }
   position: absolute;
   inset: 0;
   background: #ffffff;
-
-  /* No border. A 1px CSS border on a 3D-transformed element is rasterised
-     flat and then resampled onto the rotated quad, which is what made the
-     cube's edges look broken and stepped. The outline is drawn instead as
-     flat SVG by js/modules/cube-outline.js, where it is a real straight line
-     at any angle. See docs/CUBE.md. */
-  border: 0;
-
+  border: 1px solid var(--ink);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,45 +116,11 @@ body.cube-intro .cube { transition: transform 1.6s var(--fade-ease); }
               opacity 0.8s ease;
 }
 
-/* During the intro the outline is invisible, so the logo draws onto blank
+/* During the intro the borders are invisible so the logo draws onto blank
    space rather than into an already-drawn box. */
 body.intro-stroke-off .face {
+  border-color: transparent !important;
   transition: none !important;
-}
-
-/* ---------------------------------------------------------------------------
-   The outline.
-
-   A flat SVG laid over the cube, its twelve edges repositioned every frame by
-   js/modules/cube-outline.js. Flat, so the browser paints it with real
-   geometric antialiasing rather than resampling a rotated bitmap - which is
-   the whole reason it exists.
-
-   pointer-events: none is essential: the faces underneath are the menu.
-   --------------------------------------------------------------------------- */
-
-.cube-outline {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-  z-index: 3;
-  transition: opacity 0.8s var(--fade-ease);
-}
-
-.cube-outline line {
-  stroke: var(--ink);
-  stroke-width: 1;
-  stroke-linecap: square;
-  vector-effect: non-scaling-stroke;
-  shape-rendering: geometricPrecision;
-}
-
-body.intro-stroke-off .cube-outline {
-  opacity: 0;
-  transition: none;
 }
 
 .face-home {
@@ -180,8 +130,8 @@ body.intro-stroke-off .cube-outline {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .face:hover { background: #000000; color: #ffffff; }
-  .face-home:hover { background: #f0f0f0; color: var(--ink); }
+  .face:hover { background: #000000; color: #ffffff; border-color: #000000; }
+  .face-home:hover { background: #f0f0f0; color: var(--ink); border-color: var(--ink); }
   body.cube-intro .face:hover { background: #ffffff; color: var(--ink); }
   body.cube-intro .face-home:hover { background: #ffffff; color: var(--ink); }
   body.cube-intro .cube.hovering .face { opacity: 1; }
@@ -189,7 +139,7 @@ body.intro-stroke-off .cube-outline {
   .cube.hovering .face:hover { opacity: 1; }
 }
 
-.face.active { background: #000000; color: #ffffff; }
+.face.active { background: #000000; color: #ffffff; border-color: #000000; }
 .face:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
 
 .face-title {

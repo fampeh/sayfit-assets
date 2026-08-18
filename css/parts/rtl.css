@@ -63,9 +63,17 @@
 }
 
 @media (max-width: 768px) {
+  [dir="rtl"] .project-slider .project-info {
+    padding-right: 0;
+    padding-left: 20px;
+  }
+  [dir="rtl"] .project-info {
+    padding-right: 0;
+    padding-left: 50px;
+  }
   [dir="rtl"] .project-slider .polygon-nav {
     right: auto;
-    left: 10px;
+    left: -10px;
   }
 }
 
