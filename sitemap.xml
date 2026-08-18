@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Replace the domain before going live - see docs/SEO.md.
+
+  The site is one page, so there is one entry. The Persian reading of it is
+  declared as an alternate rather than a second URL, which is what the
+  hreflang tags in index.html also say.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://sayfit.ir/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sayfit.ir/"/>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://sayfit.ir/?lang=fa"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sayfit.ir/"/>
+  </url>
+  <url>
+    <loc>https://sayfit.ir/customer/</loc>
+  </url>
+</urlset>

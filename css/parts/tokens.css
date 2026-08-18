@@ -1,0 +1,88 @@
+/* =============================================================================
+   Design tokens and web fonts.
+
+   Everything that is a *value* lives here — colour, size, timing. No selectors
+   beyond :root. If you want to restyle the site without hunting through
+   layout rules, this is the file to open first.
+
+   Note: the old style.css declared :root twice and set --ink to #111111 and
+   then again to #000000 further down; the second one won, so #000000 is what
+   the site has always actually rendered. It is kept, declared once.
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('../../font/SpaceGrotesk.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ubuntu';
+  src: url('../../font/Ubuntu-Light.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+}
+
+/* Persian face. unicode-range means a visitor reading the English page never
+   downloads it — the browser only fetches it once Persian glyphs appear. */
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('../../font/Vazirmatn-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('../../font/Vazirmatn-SemiBold.woff2') format('woff2');
+  font-weight: 600 800;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+:root {
+  /* --- Colour ------------------------------------------------------------ */
+  --bg: #ffffff;
+  --ink: #000000;
+  --gray-1: #333333;
+  --gray-2: #777777;
+  --gray-3: #e6e6e6;
+
+  /* --- The cube ---------------------------------------------------------- */
+  --size: clamp(210px, 60vmin, 320px);
+  --half: calc(var(--size) / 2);
+  --home-size: 38px;
+  --home-half: calc(var(--home-size) / 2);
+
+  /* --- Type -------------------------------------------------------------- */
+  /* Vazirmatn sits first for Persian glyphs only (see unicode-range above),
+     so Latin text still renders in Space Grotesk in both languages. */
+  --font: 'Vazirmatn', 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+
+  /* --- Motion ------------------------------------------------------------ */
+  --transition: 0.3s ease;
+  --fade-duration: 1.1s;
+  --fade-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* --- Logo draw-on animation -------------------------------------------- */
+  --stroke-thin: 1.2px;
+  --stroke-thick: 4.5px;
+  --serif-dur: 0.25s;
+  --open-dur: 0.8s;
+  --close-dur: 0.6s;
+  --overlap: 0.15s;
+  --thick-dur: 0.75s;
+  --draw-ease: cubic-bezier(0.45, 0, 0.55, 1);
+  --liquid-ease: cubic-bezier(0.18, 0.9, 0.25, 1);
+  --draw-end: calc(
+    (var(--serif-dur) * 2) + var(--open-dur) + var(--close-dur) - (var(--overlap) * 3)
+  );
+  --type-start: var(--draw-end);
+  --char-stagger: 0.08s;
+}

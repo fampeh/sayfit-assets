@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-labelledby="bekuk-cover-title">
+  <title id="bekuk-cover-title">Bekuk — a plucked string coming into tune</title>
+
+  <!--
+    Placeholder cover for the Bekuk tile. Deliberately minimal, one weight of
+    line, no fills, no colour of its own: it inherits currentColor so it reads
+    the same in both light and dark and in either language direction.
+
+    Replace this whole file whenever you want — the tile only needs the path
+    in data/apps.json to keep pointing at assets/apps/bekuk.svg.
+
+    What it draws: a string held between nut and bridge, still ringing on the
+    left and settled into a straight line on the right. That is the moment the
+    app is for.
+  -->
+
+  <g fill="none" stroke="currentColor" stroke-width="1.25" vector-effect="non-scaling-stroke">
+
+    <!-- Nut and bridge: the two points the string is stretched between. -->
+    <line x1="96" y1="128" x2="96" y2="232" />
+    <line x1="384" y1="128" x2="384" y2="232" />
+
+    <!-- The string, decaying from vibration into a settled line. -->
+    <path d="M96 180
+             C 132 120, 168 240, 204 180
+             C 231 138, 258 222, 285 180
+             C 303 156, 321 204, 339 180
+             C 350 168, 362 192, 373 180
+             L 384 180" />
+
+    <!-- Three quiet neighbours: the other strings, already in tune. -->
+    <line x1="96" y1="146" x2="384" y2="146" stroke-opacity="0.28" />
+    <line x1="96" y1="214" x2="384" y2="214" stroke-opacity="0.28" />
+    <line x1="96" y1="248" x2="384" y2="248" stroke-opacity="0.16" />
+
+    <!-- The tuning peg. -->
+    <circle cx="60" cy="180" r="16" />
+    <line x1="60" y1="164" x2="60" y2="152" />
+
+  </g>
+</svg>

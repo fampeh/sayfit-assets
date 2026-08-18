@@ -1,0 +1,219 @@
+/* =============================================================================
+   The 3D project carousels, one per work category.
+
+   Note on direction: the prev/next buttons turn the carousel the *opposite*
+   way from the polygon navigator, and that is deliberate - pressing the left
+   button pushes the drum to the left. Do not "fix" it. See docs/DECISIONS.md.
+   ========================================================================== */
+
+.work-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  max-width: 1180px;
+}
+
+.work-copy {
+  padding-top: 4px;
+}
+
+.work-copy p {
+  max-width: 34ch;
+  line-height: 1.8;
+}
+
+.project-slider {
+  width: 100%;
+  max-width: 650px;
+  margin: 30px auto 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+
+.slider-frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.project-slider .slider-container {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  position: relative;
+  perspective: 600px;
+  cursor: pointer;
+  user-select: none;
+  touch-action: pan-y;
+}
+
+.project-slider .slider-container:active {
+  cursor: grabbing;
+}
+
+.project-slider .carousel {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+}
+
+.project-slider .carousel.dragging {
+  transition: none;
+}
+
+.project-slider .carousel.dragging .slide img,
+.project-slider .carousel.dragging .slide video {
+  filter: grayscale(100%) !important;
+  transition: none;
+}
+
+/* Hide carousel before JS calculations */
+.project-slider .carousel:empty {
+  opacity: 0;
+}
+
+.project-slider .slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  backface-visibility: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  background: #141414;
+}
+
+.project-slider .slide img,
+.project-slider .slide video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  filter: grayscale(100%);
+  transition: filter 0.5s ease;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-slider .slide:hover img,
+  .project-slider .slide:hover video {
+    filter: grayscale(0%);
+  }
+}
+
+.project-slider .nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 45px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(15, 15, 15, 0.8);
+  color: #fff;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.project-slider .nav-btn:hover {
+  background: #fff;
+  color: #000;
+}
+
+.project-slider .prev-btn { left: -10px; }
+.project-slider .next-btn { right: -10px; }
+
+.project-info {
+  width: 100%;
+  text-align: left;
+  direction: ltr;
+  transition: all 0.25s ease;
+  min-height: 200px;
+}
+
+.project-info.changing {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.project-year {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.project-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #000000;
+  margin-bottom: 8px;
+}
+
+.project-desc {
+  font-size: 14px;
+  color: #525252;
+  line-height: 1.6;
+}
+
+.project-slider .polygon-nav {
+  position: absolute;
+  bottom: 140px;
+  right: 0px;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-edge {
+  stroke: rgba(73, 73, 73, 0.18);
+  stroke-width: 1.5;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
+  cursor: pointer;
+}
+
+.nav-edge:hover {
+  stroke: rgba(170, 170, 170, 0.6);
+  stroke-width: 2.5;
+}
+
+.nav-edge.active {
+  stroke: #858585;
+  stroke-width: 3.5;
+}
+
+/* --- Empty state ----------------------------------------------------------
+   A category with no photographs yet used to render a silent blank box: the
+   slider bailed out and nothing said why. This is what shows instead until
+   the folder is filled and update_projects.py has been run. */
+
+.slider-empty {
+  border: 1px dashed var(--gray-3);
+  padding: 28px 24px;
+  color: var(--gray-2);
+  font-size: 0.85rem;
+  line-height: 1.9;
+  text-align: center;
+  max-width: 42ch;
+  margin: 30px auto 0;
+}

@@ -1,0 +1,111 @@
+{
+  "_readme": "English UI strings. Every key here MUST also exist in fa.json. Keys are referenced from index.html via data-i18n attributes — see docs/I18N.md.",
+
+  "meta": {
+    "lang": "en",
+    "dir": "ltr",
+    "locale": "en_US",
+    "title": "Sayfit Studio — Sculpture, Handmade Eyewear & Visual Identity by Mehdi Seyfi",
+    "description": "Studio of Mehdi Seyfi: stone and mixed-media sculpture, tailor-made handmade eyewear, and visual identity design. Public artworks from national and international symposiums.",
+    "shortTitle": "Sayfit Studio",
+    "ogAlt": "Sayfit Studio — sculpture and design by Mehdi Seyfi"
+  },
+
+  "brand": {
+    "name": "Sayfit",
+    "full": "Sayfit Studio",
+    "tagline": "Sculpture, objects, and visual identity."
+  },
+
+  "nav": {
+    "home": "Home",
+    "work": "Work",
+    "archive": "Archive",
+    "apps": "App",
+    "about": "About",
+    "contact": "Contact",
+    "menuToggle": "Toggle navigation menu",
+    "backToTop": "Back to top",
+    "cubeLabel": "Interactive navigation cube",
+    "languageToggle": "فارسی",
+    "languageToggleLabel": "Switch language to Persian"
+  },
+
+  "work": {
+    "sculpture": "Sculpture",
+    "glasses": "Tailor made glasses",
+    "identity": "Visual identity"
+  },
+
+  "sections": {
+    "sculpture": {
+      "title": "Sculpture",
+      "intro": "Objects in stone, glass, and resin."
+    },
+    "glasses": {
+      "title": "Tailor made glasses",
+      "intro": "Handmade custom eyewear with a precise balance of form and function."
+    },
+    "identity": {
+      "title": "Visual identity",
+      "intro": "Brand identities and visual systems built with the same care as the studio works."
+    },
+    "archive": {
+      "title": "Archive",
+      "intro": "Earlier series and experiments."
+    },
+    "apps": {
+      "title": "App",
+      "intro": "Tools built in the studio and released for anyone to use, free and without an account."
+    },
+    "about": {
+      "title": "About"
+    },
+    "contact": {
+      "title": "Contact"
+    }
+  },
+
+  "archive": {
+    "customer": "Customer"
+  },
+
+  "about": {
+    "p1": "I'm Mehdi Seyfi, a designer and sculptor exploring the relationship between ideas, materials, and form.",
+    "p2": "My practice is driven by observation, precision, and problem-solving — transforming concepts into meaningful physical experiences. Through sculpture, product design, and handmade objects, I explore how materials such as stone, wood, metal, and bone can carry stories and create connections.",
+    "p3": "I have participated in several national and international sculpture symposiums, creating large-scale public artworks through direct engagement with raw materials and traditional making processes.",
+    "p4": "Alongside sculpture, I design and craft handmade eyewear, combining material exploration with functional design. My background in graphic design, particularly identity and logo design, has shaped my approach to creating clear, purposeful, and distinctive forms.",
+    "p5": "For me, design begins with understanding a problem and ends when an idea finds its right form.",
+    "portraitAlt": "Portrait of Mehdi Seyfi"
+  },
+
+  "contact": {
+    "emailLabel": "Email",
+    "phoneLabel": "Mobile",
+    "facebook": "Facebook",
+    "linkedin": "LinkedIn",
+    "github": "GitHub"
+  },
+
+  "apps": {
+    "openLabel": "Open",
+    "opensInNewTab": "opens in a new tab"
+  },
+
+  "slider": {
+    "prev": "Previous project",
+    "next": "Next project",
+    "empty": "This collection is being prepared. New work is added here as it is photographed.",
+    "loadError": "Projects could not be loaded. Please refresh the page."
+  },
+
+  "modal": {
+    "close": "Close",
+    "prev": "Previous media",
+    "next": "Next media"
+  },
+
+  "footer": {
+    "copyright": "© 2026 Sayfit Studio."
+  }
+}

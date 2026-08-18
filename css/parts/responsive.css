@@ -1,0 +1,202 @@
+/* =============================================================================
+   Breakpoints.
+
+   The three widths below (900 / 720 / 768) are kept in that exact order on
+   purpose. The old stylesheet declared them in this sequence and some rules
+   rely on it - notably .project-info, where the 720 block sets one padding and
+   the 768 block sets another. Reordering them silently changes the layout, so
+   if you tidy this file, check the result at 700px and at 760px.
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  :root { --home-size: 34px; }
+  .sticky-nav { padding: 12px 5vw; }
+  .sticky-left { gap: 18px; }
+  .sticky-links { gap: 12px; letter-spacing: 0.14em; }
+  .work-layout { grid-template-columns: 1fr; gap: 22px; }
+  .work-copy p { max-width: 100%; }
+}
+
+@media (max-width: 720px) {
+  .sticky-nav { flex-direction: row; align-items: center; gap: 0; }
+  .sticky-left { width: auto; align-items: center; gap: 10px; }
+  .sticky-right { width: auto; margin-inline-start: auto; }
+  .hamburger { display: inline-block; }
+
+  .sticky-links {
+    position: absolute;
+    top: calc(100% + 1px);
+    left: 0;
+    right: 0;
+    display: grid;
+    gap: 0;
+    padding: 12px 6vw;
+    border: 1px solid var(--gray-3);
+    border-left: none;
+    border-right: none;
+    background: rgba(255, 255, 255, .98);
+    transform: translateY(-12px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s var(--fade-ease), transform .35s var(--fade-ease);
+  }
+
+  .sticky-links.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .sticky-links > a,
+  .sticky-links > .sticky-menu > .sticky-button {
+    display: block;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    width: 100%;
+    text-align: start;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+  }
+
+  .sticky-menu { width: 100%; }
+  .sticky-menu > .sticky-button { position: relative; padding-inline-end: 22px; }
+
+  .sticky-menu > .sticky-button::after {
+    content: "+";
+    position: absolute;
+    inset-inline-end: 0;
+    top: 50%;
+    transform: translateY(-50%) rotate(0deg);
+    transition: transform .25s ease, opacity .25s ease;
+    opacity: 0.75;
+  }
+
+  .sticky-menu.open > .sticky-button::after {
+    transform: translateY(-50%) rotate(45deg);
+    opacity: 1;
+  }
+
+  .sticky-submenu {
+    position: static;
+    border: 0;
+    padding: 0 0 0 14px;
+    min-width: 0;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+    transition: max-height .35s ease, padding .35s ease;
+  }
+
+  .sticky-menu.open .sticky-submenu {
+    max-height: 300px;
+    padding: 6px 0 10px 14px;
+  }
+
+  .sticky-submenu a,
+  .sticky-submenu button {
+    font-size: .67rem;
+    padding: 10px 0;
+  }
+
+  .landing {
+    padding-top: 100px;
+    min-height: calc(100vh - 60px);
+  }
+
+  section { scroll-margin-top: 70px; }
+
+  .about-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .about-image { order: 1; }
+  .about-text { order: 2; }
+
+  .about-text p {
+    line-height: 1.9;
+    letter-spacing: .01em;
+    font-size: .98rem;
+  }
+
+  .project-slider .slider-container {
+    aspect-ratio: 1 / 1;
+  }
+
+  .project-title {
+    font-size: 22px;
+  }
+
+  .project-info {
+    min-height: 160px;
+  }
+
+  .modal-main-media {
+    height: 250px;
+  }
+
+  .modal-nav {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+  .modal-prev { left: 4px; }
+  .modal-next { right: 4px; }
+
+  .apps-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+}
+
+@media (max-width: 768px) {
+  .project-slider .slider-container {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    perspective: 300px;
+    max-width: 100vw;
+  }
+  .project-slider .project-info {
+    padding-right: 20px;
+  }
+
+  /* Navigator position on mobile */
+  .project-slider .polygon-nav {
+    bottom: 100px;
+    right: -10px;
+  }
+  .project-info {
+    padding-right: 50px;
+  }
+}
+
+/* =============================================================================
+   Reduced motion.
+
+   This kills every transition and animation, which is the point - but note
+   that the cube's rotation is driven from JavaScript, not CSS. cube.js has a
+   matching branch that jumps the cube straight to its target angle instead of
+   easing there, so the cube still works when this is on. Before that branch
+   existed, clicking a cube face under reduced motion did nothing at all.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .stroke, .char {
+    animation: none !important;
+    opacity: 1;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    stroke-width: var(--stroke-thick);
+  }
+
+  .sayfit-logotype text { stroke-width: 0; }
+}

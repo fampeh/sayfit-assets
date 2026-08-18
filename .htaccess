@@ -1,0 +1,88 @@
+# Sayfit Studio - Apache config for the site root (cPanel and similar).
+#
+# Safe to delete if the host is nginx or anything else that ignores .htaccess.
+# The Sayfit-Tuner/ folder has its own file; Apache applies these per directory,
+# so the two do not fight.
+
+# ------------------------------------------------------------------
+# Force HTTPS.
+# ------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# ------------------------------------------------------------------
+# One canonical host, so www and non-www do not compete for the same
+# ranking. Uncomment and set the real domain once it is decided - leaving it
+# commented is deliberate, a wrong host here takes the site offline.
+# ------------------------------------------------------------------
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTP_HOST} ^www\.sayfit\.ir$ [NC]
+#   RewriteRule ^ https://sayfit.ir%{REQUEST_URI} [L,R=301]
+# </IfModule>
+
+# ------------------------------------------------------------------
+# Correct MIME types. Some shared hosts serve .js as text/plain, which makes
+# a browser refuse to run it as a module - and this site is now built from
+# ES modules, so that failure would blank the page.
+# ------------------------------------------------------------------
+<IfModule mod_mime.c>
+  AddType application/javascript .js
+  AddType text/css .css
+  AddType font/woff2 .woff2
+  AddType image/svg+xml .svg
+  AddType application/json .json
+  AddType application/manifest+json .webmanifest
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>
+
+# ------------------------------------------------------------------
+# Caching.
+#
+# Important difference from the tuner: nothing here is content-hashed. The
+# stylesheet is always css/style.css, so it can NOT be cached for a year -
+# a visitor would keep the old one after every update.
+#
+#   fonts, images        one year   (they never change under the same name)
+#   css, js, json, svg   one hour   (long enough to help, short enough that a
+#                                    FileZilla upload is visible the same day)
+#   html                 no-cache   (always revalidated)
+# ------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(woff2|jpg|jpeg|png)$">
+    Header set Cache-Control "public, max-age=31536000"
+  </FilesMatch>
+
+  <FilesMatch "\.(js|css|json|svg)$">
+    Header set Cache-Control "public, max-age=3600, must-revalidate"
+  </FilesMatch>
+
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+
+  # Basic hardening. None of these change how the site renders.
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ------------------------------------------------------------------
+# Do not serve the working files that happen to sit in this folder. They are
+# uploaded by accident more often than anyone admits.
+# ------------------------------------------------------------------
+<FilesMatch "\.(py|spec|cdr|bat|md)$">
+  Require all denied
+</FilesMatch>

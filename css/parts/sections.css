@@ -1,0 +1,95 @@
+/* =============================================================================
+   About and Contact.
+   ========================================================================== */
+
+.about-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 32px;
+  /* Align the top of the image with the top of the text column */
+  align-items: start;
+}
+
+.about-image img {
+  width: 100%;
+  height: auto;
+  max-width: 420px;
+  border: 1px solid var(--gray-3);
+}
+
+/* Justified About paragraphs (flush on both edges). Hyphenation lets long
+   words break, so the browser does not stretch the word gaps as much.
+   text-justify: inter-word spreads the space between words rather than
+   between letters, which Persian in particular must never do. */
+.about-text p {
+  text-align: justify;
+  text-justify: inter-word;
+  line-height: 1.7;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+}
+
+.about-text p + p {
+  margin-top: 20px;
+}
+
+/* Contact: heading stays in place; details centred, pushed lower, larger.
+   The details block shrinks to the width of its widest line so the icon
+   row can align its edges to the text. */
+#contact .content {
+  text-align: center;
+}
+
+#contact .content h2 {
+  text-align: start;
+}
+
+#contact .contact-details {
+  display: inline-block;
+  text-align: center;
+  margin-top: clamp(90px, 26vh, 300px);
+}
+
+#contact .contact-details p {
+  font-size: 1.2rem;
+  color: var(--gray-1);
+  margin: 0 0 4px;
+}
+
+/* Phone numbers and e-mail addresses read left-to-right even on the Persian
+   page, so they are pinned to ltr regardless of document direction. */
+#contact .contact-value {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+}
+
+/* Icons span the same width as the text, pinned to the left and right edges */
+.contact-socials {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-2);
+  transition: color var(--transition);
+}
+
+.social-link:hover,
+.social-link:focus-visible {
+  color: var(--ink);
+  outline: none;
+}
+
+.social-link svg {
+  width: 30px;
+  height: 30px;
+  display: block;
+}

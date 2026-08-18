@@ -1,0 +1,6 @@
+# Sayfit Studio. Everything here is a public portfolio; nothing to keep out.
+User-agent: *
+Allow: /
+
+# Replace the domain before going live - see docs/SEO.md.
+Sitemap: https://sayfit.ir/sitemap.xml

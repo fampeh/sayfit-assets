@@ -1,0 +1,229 @@
+/* =============================================================================
+   The sticky header: pinned links, dropdown submenus, the spinning home cube,
+   the hamburger, and the language switch.
+
+   The header is hidden until the visitor has scrolled past the landing
+   section; `body.at-content` is what reveals it (set in js/modules/scroll.js).
+   ========================================================================== */
+
+.sticky-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 6vw;
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid var(--gray-3);
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform var(--fade-duration) var(--fade-ease),
+              opacity var(--fade-duration) var(--fade-ease);
+}
+
+body.at-content .sticky-nav {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sticky-left { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+.sticky-right { display: flex; align-items: center; gap: 12px; }
+
+.sticky-brand {
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+}
+
+.sticky-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 22px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.82rem;
+}
+
+.sticky-links a,
+.sticky-button {
+  position: relative;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.82rem;
+  color: var(--gray-2);
+}
+
+.sticky-links a.active,
+.sticky-button.active { color: var(--ink); }
+
+.sticky-links a:hover,
+.sticky-links a:focus-visible,
+.sticky-button:hover,
+.sticky-button:focus-visible {
+  text-decoration: underline;
+  color: var(--ink);
+}
+
+.sticky-menu { position: relative; }
+
+.sticky-submenu {
+  position: absolute;
+  top: 26px;
+  inset-inline-start: 0;
+  min-width: 190px;
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--gray-3);
+  background: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  /* Delay before hiding gives time to travel from button to submenu */
+  transition: opacity .32s ease .28s, transform .32s ease .28s;
+  z-index: 5;
+}
+
+/* Invisible bridge covering the gap between the button and the submenu
+   so the cursor never crosses a dead zone and drops the hover. */
+.sticky-submenu::before {
+  content: "";
+  position: absolute;
+  top: -16px;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: transparent;
+}
+
+.sticky-menu.open .sticky-submenu,
+.sticky-menu:hover .sticky-submenu,
+.sticky-menu:focus-within .sticky-submenu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  /* Open immediately; only the closing direction is delayed */
+  transition-delay: 0s;
+}
+
+.sticky-submenu button,
+.sticky-submenu a {
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: start;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.75rem;
+  color: var(--gray-1);
+}
+
+.sticky-submenu button:hover,
+.sticky-submenu button:focus-visible,
+.sticky-submenu a:hover,
+.sticky-submenu a:focus-visible {
+  text-decoration: underline;
+  color: var(--ink);
+}
+
+/* --- Language switch ------------------------------------------------------ */
+
+.lang-switch {
+  background: none;
+  border: 1px solid var(--gray-3);
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gray-2);
+  transition: color var(--transition), border-color var(--transition);
+  white-space: nowrap;
+}
+
+.lang-switch:hover,
+.lang-switch:focus-visible {
+  color: var(--ink);
+  border-color: var(--ink);
+  outline: none;
+}
+
+/* --- The little spinning cube that returns you to the top ----------------- */
+
+.home-cube {
+  width: var(--home-size);
+  height: var(--home-size);
+  transform-style: preserve-3d;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  animation: spin 6s linear infinite;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity var(--fade-duration) var(--fade-ease),
+              transform var(--fade-duration) var(--fade-ease);
+}
+
+body.at-content .home-cube {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.home-face {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--ink);
+}
+
+.home-front  { transform: translateZ(var(--home-half)); }
+.home-back   { transform: rotateY(180deg) translateZ(var(--home-half)); }
+.home-right  { transform: rotateY(90deg)  translateZ(var(--home-half)); }
+.home-left   { transform: rotateY(-90deg) translateZ(var(--home-half)); }
+.home-top    { transform: rotateX(90deg)  translateZ(var(--home-half)); }
+.home-bottom { transform: rotateX(-90deg) translateZ(var(--home-half)); }
+
+@media (hover: hover) and (pointer: fine) {
+  .home-cube:hover .home-face,
+  .home-cube:focus-visible .home-face { background: rgba(17, 17, 17, 0.08); }
+}
+
+@keyframes spin {
+  from { transform: rotateX(0deg) rotateY(0deg); }
+  to { transform: rotateX(360deg) rotateY(360deg); }
+}
+
+/* --- Hamburger ------------------------------------------------------------ */
+
+.hamburger {
+  display: none;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: transparent;
+  padding: 7px 6px;
+  cursor: pointer;
+}
+
+.hamburger span {
+  display: block;
+  height: 1.5px;
+  background: var(--ink);
+  margin: 6px 0;
+  transition: transform .3s ease, opacity .3s ease;
+  transform-origin: center;
+}
+
+.hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+.hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
