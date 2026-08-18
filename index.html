@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sayfit Studio</title>
+  <link id="favicon" rel="icon" type="image/svg+xml" href="image/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="sticky-nav" id="stickyNav">
+    <div class="sticky-left">
+      <button class="hamburger" id="hamburgerBtn" type="button" aria-label="Toggle navigation menu" aria-controls="navCenter" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="sticky-links" id="navCenter" aria-label="Pinned navigation">
+        <a href="#top" data-nav="home">Home</a>
+
+        <div class="sticky-menu sticky-work" id="stickyWork">
+          <button class="sticky-button" type="button" aria-expanded="false" data-nav="work">Work</button>
+          <div class="sticky-submenu" aria-label="Work submenu">
+            <button type="button" data-target="sculpture">Sculpture</button>
+            <button type="button" data-target="tailor-made-glasses">Tailor made glasses</button>
+            <button type="button" data-target="logo-design">Logo design</button>
+          </div>
+        </div>
+
+        <div class="sticky-menu sticky-archive" id="stickyArchive">
+          <button class="sticky-button" type="button" aria-expanded="false" data-nav="archive">Archive</button>
+          <div class="sticky-submenu" aria-label="Archive submenu">
+            <a href="customer/index.html">Customer</a>
+          </div>
+        </div>
+
+        <div class="sticky-menu sticky-app" id="stickyApp">
+          <button class="sticky-button" type="button" aria-expanded="false" data-nav="app">App</button>
+          <div class="sticky-submenu" aria-label="App submenu">
+            <a href="Sayfit-Tuner/index.html">Sayfit-Tuner</a>
+          </div>
+        </div>
+
+        <a href="#about" data-nav="about">About</a>
+        <a href="#contact" data-nav="contact">Contact</a>
+      </nav>
+    </div>
+
+    <div class="sticky-right">
+      <a class="sticky-brand" href="#top">Sayfit</a>
+      <button class="home-cube" id="homeCube" type="button" aria-label="Back to top">
+        <span class="home-face home-front"></span>
+        <span class="home-face home-back"></span>
+        <span class="home-face home-right"></span>
+        <span class="home-face home-left"></span>
+        <span class="home-face home-top"></span>
+        <span class="home-face home-bottom"></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="landing" id="top">
+      <div class="scene" id="scene" aria-label="Interactive navigation cube">
+        <div class="scene-float">
+          <div class="cube" id="cube">
+            <div class="face front face-home" data-face-orient="front" data-target="top" tabindex="0" role="button">
+              <div class="logo-stage">
+  <svg viewBox="-3 -3 59.38 58.2" role="img" class="logo-sign">
+    <g>
+      <path class="stroke serif-top" d="M26.69 14.08 V2.07" />
+      <path class="stroke open" d="M26.69 2.07 C13.09 2.07 2.07 7.45 2.07 14.08 C2.07 32.04 51.31 20.16 51.31 38.11 C51.31 44.74 40.29 50.12 26.69 50.12" />
+      <path class="stroke serif-bottom" d="M26.69 50.12 V38.11" />
+      <path class="stroke closed" d="M26.69 38.11 c-13.6 0 -24.62 -5.38 -24.62 -12.01 S13.09 14.08 26.69 14.08 c13.6 0 24.62 5.38 24.62 12.01 s-11.02 12.01 -24.62 12.01" />
+    </g>
+  </svg>
+
+  <svg class="sayfit-logotype" viewBox="0 0 300 60">
+  <text x="50%" y="42" text-anchor="middle">
+    <tspan class="char">S</tspan>
+    <tspan class="char">a</tspan>
+    <tspan class="char">y</tspan>
+    <tspan class="char">F</tspan>
+    <tspan class="char">i</tspan>
+    <tspan class="char">t</tspan>
+  </text>
+</svg>
+</div>
+            </div>
+
+            <div class="face left has-sub" data-face-orient="left" data-target="work" tabindex="0" role="button" aria-expanded="false">
+              <span class="face-title">Work</span>
+              <div class="submenu" aria-label="Work categories">
+                <button class="submenu-item" type="button" data-target="sculpture">Sculpture</button>
+                <button class="submenu-item" type="button" data-target="tailor-made-glasses">Tailor made glasses</button>
+                <button class="submenu-item" type="button" data-target="logo-design">Logo design</button>
+              </div>
+            </div>
+
+            <div class="face right has-sub" data-face-orient="right" data-target="archive" tabindex="0" role="button" aria-expanded="false">
+              <span class="face-title">Archive</span>
+              <div class="submenu" aria-label="Archive links">
+                <a class="submenu-item" href="customer/index.html">Customer</a>
+              </div>
+            </div>
+
+            <div class="face top" data-face-orient="top" data-target="about" tabindex="0" role="button">About</div>
+            <div class="face bottom" data-face-orient="bottom" data-target="contact" tabindex="0" role="button">Contact</div>
+
+            <div class="face back has-sub" data-face-orient="back" data-target="app" tabindex="0" role="button" aria-expanded="false">
+              <span class="face-title">App</span>
+              <div class="submenu" aria-label="App links">
+                <a class="submenu-item" href="Sayfit-Tuner/index.html">Sayfit-Tuner</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sculpture" class="content-section work-section">
+      <div class="content work-layout">
+        <div class="work-copy">
+          <h2>Sculpture</h2>
+          <p>Objects in stone, glass, and resin.</p>
+        </div>
+
+        <div class="project-slider" data-slider="sculpture">
+          <div class="slider-frame">
+            <div class="slider-container">
+              <div class="carousel"></div>
+              <button class="nav-btn prev-btn" type="button" aria-label="Previous project">&#10094;</button>
+              <button class="nav-btn next-btn" type="button" aria-label="Next project">&#10095;</button>
+            </div>
+
+            <div class="project-info" aria-live="polite">
+              <span class="project-year"></span>
+              <h3 class="project-title"></h3>
+              <p class="project-desc"></p>
+            </div>
+
+            <div class="polygon-nav"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tailor-made-glasses" class="content-section work-section">
+      <div class="content work-layout">
+        <div class="work-copy">
+          <h2>Tailor made glasses</h2>
+          <p>Handmade custom eyewear with a precise balance of form and function.</p>
+        </div>
+
+        <div class="project-slider" data-slider="tailor-made-glasses">
+          <div class="slider-frame">
+            <div class="slider-container">
+              <div class="carousel"></div>
+              <button class="nav-btn prev-btn" type="button" aria-label="Previous project">&#10094;</button>
+              <button class="nav-btn next-btn" type="button" aria-label="Next project">&#10095;</button>
+            </div>
+
+            <div class="project-info" aria-live="polite">
+              <span class="project-year"></span>
+              <h3 class="project-title"></h3>
+              <p class="project-desc"></p>
+            </div>
+
+            <div class="polygon-nav"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="logo-design" class="content-section work-section">
+      <div class="content work-layout">
+        <div class="work-copy">
+          <h2>Logo design</h2>
+          <p>Brand identities and visual systems built with the same care as the studio works.</p>
+        </div>
+
+        <div class="project-slider" data-slider="logo-design">
+          <div class="slider-frame">
+            <div class="slider-container">
+              <div class="carousel"></div>
+              <button class="nav-btn prev-btn" type="button" aria-label="Previous project">&#10094;</button>
+              <button class="nav-btn next-btn" type="button" aria-label="Next project">&#10095;</button>
+            </div>
+
+            <div class="project-info" aria-live="polite">
+              <span class="project-year"></span>
+              <h3 class="project-title"></h3>
+              <p class="project-desc"></p>
+            </div>
+
+            <div class="polygon-nav"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="archive" class="content-section">
+      <div class="content">
+        <h2>Archive</h2>
+        <p>Earlier series and experiments.</p>
+      </div>
+    </section>
+
+    <section id="app" class="content-section">
+      <div class="content">
+        <h2>App</h2>
+        <p>Sayfit-Tuner will be linked here.</p>
+      </div>
+    </section>
+
+    <section id="about" class="content-section">
+      <div class="content">
+        <h2>About</h2>
+        <div class="about-layout">
+          <div class="about-text">
+            <p>I'm Mehdi Seyfi, a designer and sculptor exploring the relationship between ideas, materials, and form.</p>
+            <p>My practice is driven by observation, precision, and problem-solving — transforming concepts into meaningful physical experiences. Through sculpture, product design, and handmade objects, I explore how materials such as stone, wood, metal, and bone can carry stories and create connections.</p>
+            <p>I have participated in several national and international sculpture symposiums, creating large-scale public artworks through direct engagement with raw materials and traditional making processes.</p>
+            <p>Alongside sculpture, I design and craft handmade eyewear, combining material exploration with functional design. My background in graphic design, particularly identity and logo design, has shaped my approach to creating clear, purposeful, and distinctive forms.</p>
+            <p>For me, design begins with understanding a problem and ends when an idea finds its right form.</p>
+          </div>
+          <div class="about-image"><img src="image/mehdi.jpg" alt="Mehdi portrait"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="content-section">
+      <div class="content">
+        <h2>Contact</h2>
+        <div class="contact-details">
+          <p>sayfit404@gmail.com</p>
+          <p>Mobile 09364091489</p>
+
+          <div class="contact-socials">
+            <a href="https://www.facebook.com/mehdi.seyfi.3" class="social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+              </svg>
+            </a>
+            <a href="https://www.linkedin.com/in/mehdi-seyfi-a25a588b/" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                <rect x="2" y="9" width="4" height="12"/>
+                <circle cx="4" cy="4" r="2"/>
+              </svg>
+            </a>
+            <a href="https://github.com/fampeh" class="social-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><span>(c) 2026 SayFit Studio.</span></footer>
+
+  <div class="modal-backdrop" id="projectModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="close-modal" id="closeModal" type="button" aria-label="Close modal">&times;</button>
+
+      <button class="modal-nav modal-prev" id="modalPrev" type="button" aria-label="Previous media">&#10094;</button>
+      <button class="modal-nav modal-next" id="modalNext" type="button" aria-label="Next media">&#10095;</button>
+
+      <span class="modal-counter" id="modalCounter"></span>
+
+      <div class="modal-body">
+        <span class="modal-year" id="modalYear"></span>
+        <h2 class="modal-title" id="modalTitle"></h2>
+
+        <div class="modal-main-media" id="modalMainMedia"></div>
+
+        <div class="modal-thumbnails" id="modalThumbnails"></div>
+
+        <p class="modal-desc" id="modalDesc"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/script.js" defer></script>
+</body>
+</html>

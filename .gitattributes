@@ -1,0 +1,19 @@
+# Normalise text files to LF in the repository, checkout native on Windows.
+* text=auto
+
+*.html  text eol=lf
+*.css   text eol=lf
+*.js    text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+*.py    text eol=lf
+*.bat   text eol=crlf
+
+# Binary — never diff or convert.
+*.png   binary
+*.jpg   binary
+*.svg   text
+*.woff2 binary
+*.pdf   binary
+*.cdr   binary
+*.mp4   binary
