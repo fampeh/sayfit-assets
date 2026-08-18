@@ -53,28 +53,20 @@
   hyphens: none;
 }
 
-/* The carousel caption block is pinned to ltr in slider.css because project
-   titles and years are Latin. On the Persian page the surrounding layout
-   flips but the caption itself should stay as it is - only its padding needs
-   to move to the other side. */
-@media (max-width: 768px) {
-  [dir="rtl"] .project-slider .project-info {
-    padding-right: 0;
-    padding-left: 20px;
-  }
-  [dir="rtl"] .project-info {
-    padding-right: 0;
-    padding-left: 50px;
-  }
-  [dir="rtl"] .project-slider .polygon-nav {
-    right: auto;
-    left: -10px;
-  }
-}
-
+/* The carousel caption is pinned to ltr in slider.css because project titles
+   and years are Latin; it needs no direction handling here. The polygon
+   navigator is the only piece that has to move - it hangs off one edge, and
+   on the Persian page that should be the other edge. */
 [dir="rtl"] .project-slider .polygon-nav {
   right: auto;
   left: 0;
+}
+
+@media (max-width: 768px) {
+  [dir="rtl"] .project-slider .polygon-nav {
+    right: auto;
+    left: 10px;
+  }
 }
 
 /* The modal is a dark, image-first surface with Latin project metadata; it

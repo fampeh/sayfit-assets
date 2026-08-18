@@ -16,6 +16,9 @@
 
 import { t } from './i18n.js';
 
+/** Set by the carousel so the lightbox can offer a link to the full page. */
+let projectPageLink = null;
+
 const FOCUSABLE =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -77,7 +80,6 @@ function buildThumbnails() {
     const thumb = document.createElement('button');
     thumb.type = 'button';
     thumb.className = 'thumb-wrapper';
-    if (index === 0) thumb.classList.add('active');
     thumb.setAttribute('aria-label', `${index + 1} / ${project.media.length}`);
 
     const el = document.createElement(item.type === 'video' ? 'video' : 'img');
@@ -109,14 +111,20 @@ export function openProjectModal(nextProject) {
 
   lastFocused = document.activeElement;
   project = nextProject;
-  mediaIndex = 0;
+  // Gallery pages open the viewer on the photograph that was clicked; the
+  // carousel always opens on the cover.
+  mediaIndex = Number.isInteger(nextProject.startIndex)
+    ? Math.min(Math.max(nextProject.startIndex, 0), nextProject.media.length - 1)
+    : 0;
 
   yearEl.textContent = project.year || '';
   titleEl.textContent = project.title || '';
   descEl.textContent = project.desc || '';
+  setProjectPageLink(nextProject.pageUrl);
 
   buildThumbnails();
-  setMainMedia(project.media[0], project.title || '');
+  updateActiveThumbnail();
+  setMainMedia(project.media[mediaIndex], project.title || '');
   updateCounter();
 
   modal.classList.add('open');
@@ -124,6 +132,22 @@ export function openProjectModal(nextProject) {
   document.body.classList.add('modal-open');
 
   document.getElementById('closeModal')?.focus();
+}
+
+/**
+ * Show or hide the "view project page" link. The carousel passes a URL; the
+ * project pages themselves pass nothing, because you are already there.
+ */
+function setProjectPageLink(url) {
+  if (!projectPageLink) return;
+  if (!url) {
+    projectPageLink.hidden = true;
+    projectPageLink.removeAttribute('href');
+    return;
+  }
+  projectPageLink.hidden = false;
+  projectPageLink.href = url;
+  projectPageLink.textContent = t('project.viewProject') || 'View project page';
 }
 
 export function closeModal() {
@@ -200,6 +224,7 @@ export function initModal() {
   titleEl = document.getElementById('modalTitle');
   descEl = document.getElementById('modalDesc');
   counterEl = document.getElementById('modalCounter');
+  projectPageLink = document.getElementById('modalProjectLink');
 
   document.getElementById('closeModal')?.addEventListener('click', closeModal);
   document.getElementById('modalPrev')?.addEventListener('click', () => navigate(-1));

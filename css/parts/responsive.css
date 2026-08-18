@@ -1,11 +1,16 @@
 /* =============================================================================
    Breakpoints.
 
-   The three widths below (900 / 720 / 768) are kept in that exact order on
-   purpose. The old stylesheet declared them in this sequence and some rules
-   rely on it - notably .project-info, where the 720 block sets one padding and
-   the 768 block sets another. Reordering them silently changes the layout, so
-   if you tidy this file, check the result at 700px and at 760px.
+   Ordered 900 / 720 / 768 / 420. The 768 block deliberately comes after 720:
+   it inherits from it and overrides the carousel, so a phone gets both.
+
+   The pair of rules that used to fight over .project-info's padding-right
+   (20px in one block, 50px in the other) are gone - they were trying to make
+   room for the polygon navigator, which is absolutely positioned and could
+   never be made room for that way. See the 768 block.
+
+   Mobile is where this site is actually read. Check any change at 360px
+   before you check it at 1440px.
    ========================================================================== */
 
 @media (max-width: 900px) {
@@ -121,16 +126,49 @@
     font-size: .98rem;
   }
 
+  /* Give the photograph the width back. On a 360px phone the section
+     padding plus the slider padding was eating 112px - nearly a third of the
+     screen - and the carousel was rendering at 248px. */
+  .content-section {
+    padding: 20px 5vw;
+    /* A full viewport height per section means a lot of empty scrolling on a
+       phone, where the content is much shorter than the screen. */
+    min-height: auto;
+    padding-block: 64px;
+  }
+
+  .project-slider {
+    padding: 0;
+    margin-top: 18px;
+  }
+
   .project-slider .slider-container {
     aspect-ratio: 1 / 1;
   }
 
   .project-title {
-    font-size: 22px;
+    font-size: 20px;
   }
 
+  /* Was 160px of reserved space regardless of how much text there was. The
+     caption swaps with a fade, so it needs *some* floor to stop the page
+     jumping, but not that much. */
   .project-info {
-    min-height: 160px;
+    min-height: 120px;
+  }
+
+  /* Touch targets. 40px was below the 44px minimum, and -10px hung them off
+     the edge of the photograph where a thumb reaching the screen edge would
+     miss them. */
+  .project-slider .nav-btn {
+    width: 44px;
+    height: 44px;
+  }
+  .project-slider .prev-btn { left: 6px; }
+  .project-slider .next-btn { right: 6px; }
+
+  .modal-content {
+    padding: 16px;
   }
 
   .modal-main-media {
@@ -158,18 +196,75 @@
     perspective: 300px;
     max-width: 100vw;
   }
-  .project-slider .project-info {
-    padding-right: 20px;
+
+  /* ---------------------------------------------------------------------
+     The polygon navigator.
+
+     It used to sit `bottom: 100px; right: -10px`, which on a narrow screen
+     put it straight on top of the project title - the two collided and the
+     text was unreadable. Two rules used to fight over the caption's
+     padding-right (20px vs 50px) trying to make room for it; neither could,
+     because the navigator is 70px wide and absolutely positioned.
+
+     It now sits in the top-right corner of the photograph instead, where
+     there is no text to collide with, and the padding hacks are gone.
+     --------------------------------------------------------------------- */
+  .project-slider .polygon-nav {
+    top: 10px;
+    right: 10px;
+    bottom: auto;
+    width: 56px;
+    height: 56px;
   }
 
-  /* Navigator position on mobile */
-  .project-slider .polygon-nav {
-    bottom: 100px;
-    right: -10px;
+  .project-slider .polygon-nav svg {
+    width: 56px;
+    height: 56px;
   }
-  .project-info {
-    padding-right: 50px;
+
+  /* Thicker, because it is smaller and over a photograph now. */
+  .nav-edge { stroke: rgba(255, 255, 255, 0.45); stroke-width: 2; }
+  .nav-edge.active { stroke: #ffffff; stroke-width: 4; }
+}
+
+/* =============================================================================
+   Small phones. Below this the cube, the type and the spacing all need to come
+   down a step or the landing section alone fills two screens.
+   ========================================================================== */
+
+@media (max-width: 420px) {
+  :root {
+    --size: clamp(170px, 62vmin, 260px);
   }
+
+  .landing {
+    padding: 84px 5vw 56px;
+    gap: 12px;
+  }
+
+  .content-section {
+    padding: 52px 5vw;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+    letter-spacing: 0.08em;
+  }
+
+  .project-slider .polygon-nav,
+  .project-slider .polygon-nav svg {
+    width: 46px;
+    height: 46px;
+  }
+
+  .app-tile-body { padding: 16px 16px 18px; }
+
+  .modal-thumbnails .thumb-wrapper { flex: 0 0 64px; height: 48px; }
+
+  #contact .contact-details p { font-size: 1.05rem; }
+  #contact .contact-details { margin-top: clamp(48px, 14vh, 140px); }
+  .contact-socials { margin-top: 22px; }
+  .social-link svg { width: 26px; height: 26px; }
 }
 
 /* =============================================================================

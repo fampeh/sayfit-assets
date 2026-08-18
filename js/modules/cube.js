@@ -2,38 +2,41 @@
  * The landing cube.
  *
  * ---------------------------------------------------------------------------
- * Why this is CSS 3D and not a <canvas>
+ * Why this is DOM and not a <canvas>
  * ---------------------------------------------------------------------------
- * A canvas would give us full control of the rasteriser, but the cube is not
- * a picture - it is the site's main menu. Its faces contain real headings,
- * real buttons and real links. On canvas all of that would have to be redrawn
- * as pixels: no text selection, no tab order, no screen reader, no search
- * engine reading the words "Work" and "About", and every label re-rendered at
- * every zoom level. That is a large loss to fix an edge-quality problem that
- * had a different cause.
+ * The cube is not a picture - it is the site's main menu. Its faces contain
+ * real headings, real buttons and real links. On canvas all of that becomes
+ * pixels: no text selection, no tab order, no screen reader, no search engine
+ * reading the words "Work" and "About".
  *
- * The ragged edges were not CSS 3D being imprecise. `.scene` carried a
- * `filter: blur()` for its entrance animation, and a filter on an ancestor of
- * a 3D scene forces the browser to flatten the whole subtree into one bitmap
- * and transform that bitmap - so every 1px border was being resampled at an
- * angle. Dropping the filter once the intro is over (the `settled` class)
- * puts the borders back into the normal paint, where they are antialiased
- * properly. See css/parts/cube.css.
+ * The one part of the canvas idea that WAS right is the linework. CSS borders
+ * on 3D-transformed elements can never be clean, because the browser
+ * rasterises the element flat and then resamples that bitmap onto the rotated
+ * quad. So the outline is drawn separately, as flat SVG, by cube-outline.js -
+ * crisp straight lines at any angle - while the faces stay DOM. See CUBE.md.
  *
  * ---------------------------------------------------------------------------
- * Why labels never appear mirrored any more
+ * How the motion is built
  * ---------------------------------------------------------------------------
- * That was `backface-visibility` defaulting to `visible`: you were seeing the
- * inside of the far faces through the near ones. Fixed in CSS, not here.
+ * Three layers, and it matters that they are separate:
  *
- * Upside-down text is prevented here instead, by clamping pitch - see
- * clampPitch() below.
+ *   1. A requestAnimationFrame loop sets rotX/rotY every frame.
+ *   2. A short CSS transition on .cube smooths between those frames. This is
+ *      what gives the cube its fluid, slightly-trailing feel under the hand.
+ *      It was briefly removed during a refactor and the cube immediately felt
+ *      dry and mechanical - that transition is not incidental.
+ *   3. When the cube turns ITSELF (hover, click, recoil) the transition is
+ *      switched off, because the spring in the loop is already producing the
+ *      easing and layering a transition on top makes it feel laggy and vague.
  */
 
 import { prefersReducedMotion, isDesktop } from './config.js';
 import { scrollToTarget } from './scroll.js';
+import { createOutline, drawOutline, resizeOutline } from './cube-outline.js';
 
-/* -- Tuning ----------------------------------------------------------------- */
+/* -- Tuning -----------------------------------------------------------------
+   Every number here is safe to change on its own. Change one, reload, look.
+   --------------------------------------------------------------------------*/
 
 const DEFAULT_ROT_X = -25;
 const DEFAULT_ROT_Y = 35;
@@ -41,39 +44,49 @@ const DEFAULT_ROT_Y = 35;
 const INTRO_DELAY = prefersReducedMotion ? 0 : 3200;
 const INTRO_ROTATE = prefersReducedMotion ? 0 : 1600;
 
-const DRAG_THRESHOLD = 8;      // px of travel before a press stops being a click
+const DRAG_THRESHOLD = 8;       // px of travel before a press stops being a click
 const HOVER_INTENT_DELAY = 250; // ms of hovering before the cube turns to a face
 
-/**
- * Pitch limits. The cube may tip until a face is square to the camera
- * (90 degrees, which is what puts About on top and Contact on the bottom) but
- * never past it, because past it every label is upside down.
- *
- * PITCH_SOFT is where resistance starts, so the limit feels like the cube
- * running out of travel rather than hitting a wall.
- */
+/* --- Pitch: how far the cube will tip -----------------------------------
+   The cube may tip until a face is square to the camera (90 degrees, which is
+   what brings About and Contact to the front) but never past it, because past
+   it every label is upside down.
+
+   PITCH_SOFT is where it starts to resist. PITCH_RELUCTANT is where it decides
+   it does not want to go any further and will spring back on release - the
+   "I would rather not turn over" behaviour. */
 const PITCH_LIMIT = 90;
-const PITCH_SOFT = 70;
+const PITCH_SOFT = 52;
+const PITCH_RELUCTANT = 62;
+const PITCH_REST = 34;      // where a reluctant cube settles back to
 
-/** Spring used when the cube turns itself to face something. */
-const SPRING_STIFFNESS = 0.14;
-const SPRING_DAMPING = 0.74;
-const SPRING_SETTLED = 0.06;
+/* --- Spring used when the cube turns itself to face something ------------
+   Deliberately slow and heavy. A stiff spring here reads as a snap, which
+   felt abrupt and cheap; this one has weight and takes its time. */
+const SPRING_STIFFNESS = 0.048;
+const SPRING_DAMPING = 0.875;
+const SPRING_SETTLED = 0.05;
 
-/** How quickly a flick bleeds off. Higher = the cube coasts longer. */
-const INERTIA_DECAY = 0.94;
-const DRAG_SENSITIVITY = 0.4;
+/* --- Recoil: softer and slower still, so the refusal reads as reluctance
+   rather than as a bounce. */
+const RECOIL_STIFFNESS = 0.030;
+const RECOIL_DAMPING = 0.90;
 
-/** Idle drift. Two speeds that do not divide evenly, so the cube never
- *  repeats the same pose on a loop and reads as alive rather than motorised. */
-const DRIFT_YAW = 0.055;
-const DRIFT_PITCH = 0.018;
-const DRIFT_WOBBLE = 0.35;
+/* --- Free motion --------------------------------------------------------- */
+const INERTIA_DECAY = 0.965;    // 1.0 would never stop
+const DRAG_SENSITIVITY = 0.4;   // degrees of turn per pixel of drag
+
+/* --- Idle drift. Two speeds that do not divide evenly, so the cube never
+   repeats the same pose on a loop and reads as alive rather than motorised. */
+const DRIFT_YAW = 0.06;
+const DRIFT_PITCH = 0.022;
+const DRIFT_WOBBLE = 0.4;
 
 /* -- State ------------------------------------------------------------------ */
 
 let scene = null;
 let cube = null;
+let sceneFloat = null;
 let landing = null;
 let faces = [];
 
@@ -88,6 +101,7 @@ let targetRotX = 0, targetRotY = 0;
 let springVelX = 0, springVelY = 0;
 let isFocusingFace = false;
 let isReturningFromFocus = false;
+let isRecoiling = false;
 
 let savedRotX = 0, savedRotY = 0;
 let savedVelX = 0, savedVelY = 0;
@@ -108,22 +122,20 @@ const FACE_ANGLES = {
   bottom: { rotX: 90,  rotY: 0 }
 };
 
-/**
- * Turn toward `target` the short way round, so a cube sitting at 350 degrees
- * asked to go to 10 turns forward 20 rather than backward 340.
- */
+/** Turn toward `target` the short way round. */
 function nearestAngle(current, target) {
   const delta = ((((target - current) % 360) + 540) % 360) - 180;
   return current + delta;
 }
 
 /**
- * Keep pitch inside +/-90 so text is never upside down, with the last 20
- * degrees compressed so the cube eases into the limit instead of stopping
- * dead. The curve approaches PITCH_LIMIT asymptotically and never crosses it.
+ * Keep pitch inside +/-90 so text is never upside down, with everything past
+ * PITCH_SOFT compressed on a curve that approaches the limit and never
+ * crosses it. Pushing harder buys less and less rotation, which is what makes
+ * the cube feel like it is resisting rather than stopping dead.
  *
- * Only applied to hand-driven rotation. When the cube turns itself to show
- * the About or Contact face it needs exactly +/-90, which this would prevent.
+ * Only applied to hand-driven rotation. When the cube turns itself to show the
+ * About or Contact face it needs exactly +/-90, which this would prevent.
  */
 function clampPitch(value) {
   const magnitude = Math.abs(value);
@@ -135,9 +147,20 @@ function clampPitch(value) {
   return Math.sign(value) * (PITCH_SOFT + eased);
 }
 
+/**
+ * The CSS transition is what smooths the per-frame updates while the cube is
+ * being pushed around. It has to be off while a spring is running, or the two
+ * easings compound and the motion turns to mush.
+ */
+function setSmoothing(on) {
+  if (!cube) return;
+  cube.classList.toggle('no-cube-transition', !on);
+}
+
 function render() {
   if (!cube) return;
   cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  drawOutline(rotX, rotY);
 }
 
 /* -- Faces ------------------------------------------------------------------ */
@@ -158,14 +181,15 @@ export function resetCube() {
   springVelX = springVelY = 0;
   isFocusingFace = false;
   isReturningFromFocus = false;
+  isRecoiling = false;
   pendingFaceScroll = null;
+  setSmoothing(true);
   render();
   closeAllFaces();
 }
 
 /**
- * Everything that happens the instant the cube finishes turning to a face:
- * scroll to the section it stands for, or hand control back to free spin.
+ * Everything that happens the instant the cube finishes turning to a face.
  *
  * Pulled out of the animation loop because under `prefers-reduced-motion`
  * there IS no animation loop - the cube jumps to its angle and this runs
@@ -185,6 +209,7 @@ function onFocusArrived() {
     autoSpin = savedAutoSpin;
     velX = savedVelX;
     velY = savedVelY;
+    setSmoothing(true);
   }
 }
 
@@ -203,8 +228,10 @@ function focusFace(face) {
     velX = velY = 0;
     springVelX = springVelY = 0;
     dragging = false;
+    setSmoothing(false);
   }
 
+  isRecoiling = false;
   targetRotX = nearestAngle(rotX, target.rotX);
   targetRotY = nearestAngle(rotY, target.rotY);
   isFocusingFace = true;
@@ -225,6 +252,7 @@ function unfocusCube() {
   isReturningFromFocus = true;
   targetRotX = savedRotX;
   targetRotY = savedRotY;
+  springVelX = springVelY = 0;
 
   if (prefersReducedMotion) {
     rotX = targetRotX;
@@ -234,12 +262,43 @@ function unfocusCube() {
   }
 }
 
+/**
+ * The cube declining to turn over.
+ *
+ * Once it has been pushed past PITCH_RELUCTANT it has already been fighting
+ * back (clampPitch), and letting go now eases it back to a comfortable angle
+ * rather than leaving it stranded on its side. The spring is slower than the
+ * one used for menus, so it reads as "I would rather not" and not as a bounce.
+ */
+function startRecoil() {
+  if (isFocusingFace || isReturningFromFocus) return;
+  if (Math.abs(rotX) <= PITCH_RELUCTANT) return;
+
+  isRecoiling = true;
+  autoSpin = false;
+  velX = velY = 0;
+  springVelX = springVelY = 0;
+  setSmoothing(false);
+
+  targetRotX = Math.sign(rotX) * PITCH_REST;
+  targetRotY = rotY; // it objects to being turned over, not to being spun
+
+  if (prefersReducedMotion) {
+    rotX = targetRotX;
+    render();
+    isRecoiling = false;
+    setSmoothing(true);
+  }
+}
+
 /* -- Dragging --------------------------------------------------------------- */
 
 function startDrag(x, y) {
-  if (isFocusingFace || isReturningFromFocus) {
+  if (isFocusingFace || isReturningFromFocus || isRecoiling) {
     isFocusingFace = false;
     isReturningFromFocus = false;
+    isRecoiling = false;
+    setSmoothing(true);
   }
   pendingFaceScroll = null;
   autoSpin = false;
@@ -268,43 +327,54 @@ function moveDrag(x, y) {
 }
 
 function endDrag() {
+  if (!dragging) return;
   dragging = false;
+  startRecoil();
 }
 
 /* -- The loop --------------------------------------------------------------- */
 
+function stepSpring(stiffness, damping) {
+  springVelX = (springVelX + (targetRotX - rotX) * stiffness) * damping;
+  springVelY = (springVelY + (targetRotY - rotY) * stiffness) * damping;
+
+  rotX += springVelX;
+  rotY += springVelY;
+
+  return (
+    Math.abs(targetRotX - rotX) < SPRING_SETTLED &&
+    Math.abs(targetRotY - rotY) < SPRING_SETTLED &&
+    Math.abs(springVelX) < SPRING_SETTLED &&
+    Math.abs(springVelY) < SPRING_SETTLED
+  );
+}
+
 function step() {
   if (!dragging) {
-    if (isFocusingFace || isReturningFromFocus) {
-      // A spring rather than a straight lerp: it arrives with a touch of
-      // overshoot, which is what makes the turn feel like a physical object
-      // settling instead of a value being interpolated.
-      springVelX = (springVelX + (targetRotX - rotX) * SPRING_STIFFNESS) * SPRING_DAMPING;
-      springVelY = (springVelY + (targetRotY - rotY) * SPRING_STIFFNESS) * SPRING_DAMPING;
-
-      rotX += springVelX;
-      rotY += springVelY;
-
-      const settled =
-        Math.abs(targetRotX - rotX) < SPRING_SETTLED &&
-        Math.abs(targetRotY - rotY) < SPRING_SETTLED &&
-        Math.abs(springVelX) < SPRING_SETTLED &&
-        Math.abs(springVelY) < SPRING_SETTLED;
-
-      if (settled) {
+    if (isRecoiling) {
+      if (stepSpring(RECOIL_STIFFNESS, RECOIL_DAMPING)) {
+        rotX = targetRotX;
+        rotY = targetRotY;
+        springVelX = springVelY = 0;
+        isRecoiling = false;
+        autoSpin = true;
+        setSmoothing(true);
+      }
+      render();
+    } else if (isFocusingFace || isReturningFromFocus) {
+      if (stepSpring(SPRING_STIFFNESS, SPRING_DAMPING)) {
         rotX = targetRotX;
         rotY = targetRotY;
         springVelX = springVelY = 0;
         onFocusArrived();
       }
-
       render();
     } else {
       if (autoSpin) {
         driftClock += 0.01;
         // The pitch drift breathes; the yaw drift is steady with a slow
-        // modulation on top. Neither period is a multiple of the other, so
-        // the cube does not visibly loop.
+        // modulation on top. The two periods do not line up, so the cube does
+        // not visibly loop.
         rotY += DRIFT_YAW * (1 + DRIFT_WOBBLE * Math.sin(driftClock * 0.37));
         rotX = clampPitch(rotX + DRIFT_PITCH * Math.sin(driftClock * 0.61));
       }
@@ -334,10 +404,12 @@ function runIntroSequence() {
   render();
 
   const finish = () => {
-    // Take the blur filter off the scene. This is what makes the cube's
-    // edges crisp - see the note at the top of this file.
+    // Take the blur filter off the scene. A filter on an ancestor of a 3D
+    // scene forces the whole subtree to be flattened into one bitmap and
+    // transformed, which is expensive and soft; this ends that.
     scene.classList.add('settled');
     document.body.classList.remove('cube-intro');
+    setSmoothing(true);
     autoSpin = true;
   };
 
@@ -435,11 +507,13 @@ function bindFace(face) {
 export function initCube() {
   scene = document.getElementById('scene');
   cube = document.getElementById('cube');
+  sceneFloat = document.querySelector('.scene-float');
   landing = document.querySelector('.landing');
   faces = Array.from(document.querySelectorAll('.face'));
 
   if (!scene || !cube) return;
 
+  createOutline(sceneFloat || scene);
   runIntroSequence();
 
   if (isDesktop) {
@@ -471,6 +545,7 @@ export function initCube() {
   }, { passive: false });
 
   cube.addEventListener('touchend', endDrag);
+  cube.addEventListener('touchcancel', endDrag);
 
   faces.forEach(bindFace);
 
@@ -480,6 +555,11 @@ export function initCube() {
     closeAllFaces();
     pendingFaceScroll = null;
     if (!isDesktop) unfocusCube();
+  });
+
+  window.addEventListener('resize', () => {
+    resizeOutline(sceneFloat || scene);
+    render();
   });
 
   if (!prefersReducedMotion) requestAnimationFrame(step);

@@ -110,22 +110,19 @@ function applyAttributes(root) {
 }
 
 /**
- * Point the canonical and hreflang links at the right URLs and update the
- * document title and description. Search engines read these from the served
- * HTML, so the static tags in index.html are the English ones; this only
- * corrects them once a visitor has actively switched.
+ * Set the document's language and reading direction. This is what flips the
+ * whole layout right-to-left, so every page needs it.
+ *
+ * It deliberately does NOT touch <title> or the meta description.
+ *
+ * It used to, and that was a bug: it assumed every page was the home page and
+ * overwrote each generated project page's carefully-built title with the site
+ * title, so "Rostam & Sohrab (2018) - Sculpture by Mehdi Seyfi" became
+ * "Sayfit Studio" the moment the translation pass ran. Pages that DO want
+ * their title translated say so, by marking the <title> and the description
+ * with data-i18n / data-i18n-attr like any other string - see index.html.
  */
 function applyDocumentMeta() {
-  const title = t('meta.title');
-  const description = t('meta.description');
-
-  if (typeof title === 'string') document.title = title;
-
-  const metaDescription = document.querySelector('meta[name="description"]');
-  if (metaDescription && typeof description === 'string') {
-    metaDescription.setAttribute('content', description);
-  }
-
   document.documentElement.lang = t('meta.lang') || DEFAULT_LANGUAGE;
   document.documentElement.dir = t('meta.dir') || 'ltr';
 }

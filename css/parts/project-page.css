@@ -1,0 +1,307 @@
+/* =============================================================================
+   The generated project and category pages under /work/.
+
+   Same design language as the home page: black line on white, no ornament.
+   The photographs are the content; everything here exists to stay out of
+   their way.
+
+   Pages are written by tools/generate_project_pages.py.
+   ========================================================================== */
+
+/* These pages have no landing section, so the header's usual reveal - which
+   waits until you have scrolled past the cube - would never fire and the
+   navigation would be invisible. Pin it open. */
+.project-page .sticky-nav {
+  position: sticky;
+  transform: none;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.project-page-main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 120px 6vw 90px;
+}
+
+/* --- Breadcrumbs ---------------------------------------------------------- */
+
+.project-page-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-2);
+  margin-bottom: 46px;
+}
+
+.project-page-crumbs a:hover,
+.project-page-crumbs a:focus-visible {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.project-page-crumbs [aria-current="page"] {
+  color: var(--ink);
+}
+
+/* --- Title block ---------------------------------------------------------- */
+
+.project-page-head {
+  max-width: 62ch;
+  margin-bottom: 56px;
+}
+
+.project-page-year {
+  margin: 0 0 10px;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  color: var(--gray-2);
+}
+
+.project-page-title {
+  margin: 0 0 18px;
+  font-size: clamp(1.8rem, 4.5vw, 3rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.project-page-desc {
+  margin: 0;
+  color: var(--gray-1);
+  line-height: 1.9;
+}
+
+.project-page-count {
+  margin: 22px 0 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-2);
+}
+
+/* --- Gallery --------------------------------------------------------------
+   One column, full width, in the order the photographs were taken. A
+   masonry grid would fight the images; a sculpture wants the whole width. */
+
+.project-page-gallery {
+  display: grid;
+  gap: 20px;
+}
+
+.project-page-figure {
+  margin: 0;
+}
+
+.project-page-shot {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: #f6f6f6;
+  cursor: zoom-in;
+  overflow: hidden;
+}
+
+.project-page-shot img,
+.project-page-shot video {
+  width: 100%;
+  height: auto;
+  transition: transform 0.7s var(--fade-ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-page-shot:hover img,
+  .project-page-shot:hover video {
+    transform: scale(1.015);
+  }
+}
+
+.project-page-shot:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* --- Previous / next ------------------------------------------------------ */
+
+.project-page-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-top: 72px;
+  padding-top: 32px;
+  border-top: 1px solid var(--gray-3);
+}
+
+.project-page-step {
+  display: grid;
+  gap: 8px;
+  padding: 20px;
+  border: 1px solid var(--gray-3);
+  transition: border-color var(--transition);
+}
+
+.project-page-step:hover,
+.project-page-step:focus-visible {
+  border-color: var(--ink);
+  outline: none;
+}
+
+.project-page-step-label {
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-2);
+}
+
+.project-page-step-title {
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+}
+
+.project-page-back {
+  margin-top: 40px;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-2);
+}
+
+.project-page-back a:hover,
+.project-page-back a:focus-visible {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+/* --- The category index page ---------------------------------------------- */
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.project-card-link {
+  display: grid;
+  gap: 14px;
+}
+
+.project-card-shot {
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #f6f6f6;
+  border: 1px solid var(--gray-3);
+}
+
+.project-card-shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Matching the carousel, where covers are grey until you look at them. */
+  filter: grayscale(100%);
+  transition: filter 0.5s ease, transform 0.7s var(--fade-ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-card-link:hover .project-card-shot img,
+  .project-card-link:focus-visible .project-card-shot img {
+    filter: grayscale(0%);
+    transform: scale(1.02);
+  }
+}
+
+.project-card-body {
+  display: grid;
+  gap: 4px;
+}
+
+.project-card-year {
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  color: var(--gray-2);
+}
+
+.project-card-title {
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* --- The link out of the lightbox ----------------------------------------- */
+
+.modal-project-link {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 9px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.modal-project-link:hover,
+.modal-project-link:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.6);
+  outline: none;
+}
+
+.modal-project-link[hidden] {
+  display: none;
+}
+
+/* --- Mobile --------------------------------------------------------------- */
+
+@media (max-width: 720px) {
+  .project-page-main {
+    padding: 92px 5vw 64px;
+  }
+
+  .project-page-crumbs {
+    margin-bottom: 30px;
+    gap: 7px;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+  }
+
+  .project-page-head {
+    margin-bottom: 34px;
+  }
+
+  .project-page-gallery {
+    gap: 12px;
+  }
+
+  .project-page-steps {
+    margin-top: 48px;
+    padding-top: 24px;
+  }
+
+  .project-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+}
+
+/* Persian: the same de-tracking the rest of the site gets. */
+[dir="rtl"] .project-page-crumbs,
+[dir="rtl"] .project-page-title,
+[dir="rtl"] .project-page-count,
+[dir="rtl"] .project-page-step-label,
+[dir="rtl"] .project-page-back,
+[dir="rtl"] .project-card-title,
+[dir="rtl"] .modal-project-link {
+  letter-spacing: 0;
+  text-transform: none;
+}

@@ -16,6 +16,7 @@
 
 import { t } from './i18n.js';
 import { openProjectModal } from './modal.js';
+import { projectPageUrl } from './slug.js';
 
 /** root element -> state */
 const sliderStates = new Map();
@@ -339,7 +340,11 @@ function initSlider(root, projectData) {
       if (state.clickedIdx !== -1 && state.clickedIdx !== state.activeIndex) {
         rotateSliderTo(state, state.clickedIdx);
       } else {
-        openProjectModal(projects[state.activeIndex]);
+        const project = projects[state.activeIndex];
+        // The lightbox stays the primary way to look at a project - the
+        // carousel is the point of this page. The link just means the
+        // project's own page is one click away rather than unreachable.
+        openProjectModal({ ...project, pageUrl: projectPageUrl(project, key) });
       }
       renderSlider(state);
       return;

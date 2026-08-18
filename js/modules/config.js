@@ -5,11 +5,25 @@
  * is exactly one place to change it.
  */
 
-/* -- Where data comes from -------------------------------------------------- */
+/* -- Where data comes from --------------------------------------------------
+   These have to be absolute, not relative.
 
-export const PROJECT_DATA_URL = 'data/projects.json';
-export const APPS_DATA_URL = 'data/apps.json';
-export const I18N_URL = (lang) => `i18n/${lang}.json`;
+   The home page sits at /, but a generated project page sits at
+   /work/sculpture/rostam-and-sohrab/ - and a relative "i18n/en.json" from
+   there resolves to /work/sculpture/rostam-and-sohrab/i18n/en.json, which is
+   a 404 and an untranslated page.
+
+   The root is derived from this module's own URL rather than hard-coded as
+   "/", so the site still works if it is ever served from a subfolder.
+   config.js lives at <root>/js/modules/, hence '../../'. */
+
+export const SITE_ROOT = new URL('../../', import.meta.url).href;
+
+const fromRoot = (path) => new URL(path, SITE_ROOT).href;
+
+export const PROJECT_DATA_URL = fromRoot('data/projects.json');
+export const APPS_DATA_URL = fromRoot('data/apps.json');
+export const I18N_URL = (lang) => fromRoot(`i18n/${lang}.json`);
 
 /**
  * Fallback only. The real base is the `cdnBase` field inside projects.json,

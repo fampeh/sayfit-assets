@@ -14,15 +14,18 @@
 </IfModule>
 
 # ------------------------------------------------------------------
-# One canonical host, so www and non-www do not compete for the same
-# ranking. Uncomment and set the real domain once it is decided - leaving it
-# commented is deliberate, a wrong host here takes the site offline.
+# One canonical host: sayfit.ir. Serving the same content on www and non-www
+# is duplicate content, and whatever ranking it earns is split between them.
+#
+# The alternate is named explicitly rather than "anything that is not
+# sayfit.ir" - a catch-all would also redirect a staging host or a bare IP,
+# and then nothing but production could ever be opened.
 # ------------------------------------------------------------------
-# <IfModule mod_rewrite.c>
-#   RewriteEngine On
-#   RewriteCond %{HTTP_HOST} ^www\.sayfit\.ir$ [NC]
-#   RewriteRule ^ https://sayfit.ir%{REQUEST_URI} [L,R=301]
-# </IfModule>
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^www\.sayfit\.ir$ [NC]
+  RewriteRule ^ https://sayfit.ir%{REQUEST_URI} [L,R=301]
+</IfModule>
 
 # ------------------------------------------------------------------
 # Correct MIME types. Some shared hosts serve .js as text/plain, which makes

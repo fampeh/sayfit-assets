@@ -11,10 +11,10 @@
   Every translatable string is marked with data-i18n="key". If you add copy,
   add the key to BOTH i18n/en.json and i18n/fa.json. See docs/I18N.md.
 
-  >>> BEFORE THIS GOES LIVE: replace https://sayfit.ir/ everywhere below with
-  >>> the real domain. It appears in the canonical link, the hreflang links,
-  >>> the Open Graph tags and the JSON-LD, and it is also in sitemap.xml and
-  >>> robots.txt. docs/SEO.md has the checklist.
+  The canonical domain is sayfit.ir, confirmed 2026-08-18. It appears in the
+  canonical link, the hreflang links, the Open Graph tags and the JSON-LD, and
+  also in sitemap.xml, robots.txt and .htaccess. If it ever changes, docs/SEO.md
+  lists every file.
   ===========================================================================
 -->
 <html lang="en" dir="ltr">
@@ -24,10 +24,13 @@
   <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light">
 
-  <title>Sayfit Studio — Sculpture, Handmade Eyewear &amp; Visual Identity by Mehdi Seyfi</title>
+  <!-- data-i18n on the title and the description is what lets the language
+       switch translate them. The generated pages under /work/ deliberately do
+       not carry it, so each keeps its own project-specific title. -->
+  <title data-i18n="meta.title">Sayfit Studio — Sculpture, Handmade Eyewear &amp; Visual Identity by Mehdi Seyfi</title>
 
   <!-- What a search result actually shows under the title. -->
-  <meta name="description" content="Studio of Mehdi Seyfi: stone and mixed-media sculpture, tailor-made handmade eyewear, and visual identity design. Public artworks from national and international symposiums.">
+  <meta name="description" data-i18n-attr="content:meta.description" content="Studio of Mehdi Seyfi: stone and mixed-media sculpture, tailor-made handmade eyewear, and visual identity design. Public artworks from national and international symposiums.">
   <meta name="author" content="Mehdi Seyfi">
 
   <!-- One address owns the content, so a ?lang= copy never competes with the
@@ -448,6 +451,11 @@
         <div class="modal-thumbnails" id="modalThumbnails"></div>
 
         <p class="modal-desc" id="modalDesc"></p>
+
+        <!-- Filled in by modal.js when the lightbox is opened from a carousel.
+             The carousel is still the main way to browse; this just means the
+             project's own page is one click away instead of unreachable. -->
+        <a class="modal-project-link" id="modalProjectLink" href="" hidden>View project page</a>
       </div>
     </div>
   </div>

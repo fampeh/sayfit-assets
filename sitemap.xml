@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Replace the domain before going live - see docs/SEO.md.
-
-  The site is one page, so there is one entry. The Persian reading of it is
-  declared as an alternate rather than a second URL, which is what the
-  hreflang tags in index.html also say.
+  GENERATED FILE - written by tools/generate_project_pages.py.
+  Re-run that script after adding or removing a project; do not edit by hand.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
@@ -15,6 +12,46 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sayfit.ir/"/>
   </url>
   <url>
-    <loc>https://sayfit.ir/customer/</loc>
+    <loc>https://sayfit.ir/work/sculpture/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sayfit.ir/work/sculpture/"/>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://sayfit.ir/work/sculpture/?lang=fa"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sayfit.ir/work/sculpture/"/>
   </url>
+  <url>
+    <loc>https://sayfit.ir/work/sculpture/2-5-cubic-meter-of-stone/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sayfit.ir/work/sculpture/2-5-cubic-meter-of-stone/"/>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://sayfit.ir/work/sculpture/2-5-cubic-meter-of-stone/?lang=fa"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sayfit.ir/work/sculpture/2-5-cubic-meter-of-stone/"/>
+  </url>
+  <url>
+    <loc>https://sayfit.ir/work/sculpture/a-slice-of-life/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sayfit.ir/work/sculpture/a-slice-of-life/"/>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://sayfit.ir/work/sculpture/a-slice-of-life/?lang=fa"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sayfit.ir/work/sculpture/a-slice-of-life/"/>
+  </url>
+  <url>
+    <loc>https://sayfit.ir/work/sculpture/death-to-war/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sayfit.ir/work/sculpture/death-to-war/"/>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://sayfit.ir/work/sculpture/death-to-war/?lang=fa"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sayfit.ir/work/sculpture/death-to-war/"/>
+  </url>
+  <url>
+    <loc>https://sayfit.ir/work/sculpture/endless-elements/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sayfit.ir/work/sculpture/endless-elements/"/>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://sayfit.ir/work/sculpture/endless-elements/?lang=fa"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sayfit.ir/work/sculpture/endless-elements/"/>
+  </url>
+  <url>
+    <loc>https://sayfit.ir/work/sculpture/postwar/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sayfit.ir/work/sculpture/postwar/"/>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://sayfit.ir/work/sculpture/postwar/?lang=fa"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sayfit.ir/work/sculpture/postwar/"/>
+  </url>
+  <url>
+    <loc>https://sayfit.ir/work/sculpture/rostam-and-sohrab/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sayfit.ir/work/sculpture/rostam-and-sohrab/"/>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://sayfit.ir/work/sculpture/rostam-and-sohrab/?lang=fa"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sayfit.ir/work/sculpture/rostam-and-sohrab/"/>
+  </url>
+  <url><loc>https://sayfit.ir/customer/</loc></url>
 </urlset>

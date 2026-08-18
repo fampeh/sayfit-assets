@@ -9,7 +9,7 @@
  * with the site's UI strings. Adding an app should mean touching one file.
  */
 
-import { APPS_DATA_URL } from './config.js';
+import { APPS_DATA_URL, SITE_ROOT } from './config.js';
 import { getLanguage, t } from './i18n.js';
 
 let container = null;
@@ -23,9 +23,12 @@ let apps = [];
 async function mountCover(link, app, copy) {
   const alt = copy.coverAlt || copy.name || '';
 
-  if (app.cover && app.cover.endsWith('.svg')) {
+  // Resolved against the site root for the same reason the data URLs are.
+  const coverUrl = app.cover ? new URL(app.cover, SITE_ROOT).href : '';
+
+  if (coverUrl.endsWith('.svg')) {
     try {
-      const response = await fetch(app.cover);
+      const response = await fetch(coverUrl);
       if (response.ok) {
         const markup = await response.text();
         link.innerHTML = markup;
@@ -42,7 +45,7 @@ async function mountCover(link, app, copy) {
   }
 
   const img = document.createElement('img');
-  img.src = app.cover;
+  img.src = coverUrl;
   img.alt = alt;
   img.loading = 'lazy';
   link.replaceChildren(img);

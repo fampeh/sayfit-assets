@@ -19,5 +19,6 @@
 @import url('parts/apps.css');        /* App section tiles */
 @import url('parts/modal.css');       /* project lightbox + toast */
 @import url('parts/sections.css');    /* About, Contact */
+@import url('parts/project-page.css'); /* the generated /work/ pages */
 @import url('parts/responsive.css');  /* breakpoints + reduced motion */
 @import url('parts/rtl.css');         /* Persian / right-to-left overrides */

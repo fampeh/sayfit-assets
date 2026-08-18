@@ -50,11 +50,16 @@ every image published under it. The visible label lives in `i18n/*.json`.
 
 **Do not touch `image/`.** The owner manages that folder himself.
 
+**`work/` is generated.** Every file under it is written by
+`tools/generate_project_pages.py` from `data/projects.json`, and each one says
+so at the top. Editing them by hand is wasted work. `sitemap.xml` is generated
+by the same script.
+
 **Two Work categories are intentionally empty.** Tailor made glasses and Visual
 identity are waiting on photography. They render a written notice, not a bug.
 
-**The domain in the SEO tags is a placeholder** (`https://sayfit.ir/`). See
-`docs/SEO.md`.
+**The domain is `sayfit.ir`**, confirmed by the owner. See `docs/SEO.md` for
+every file it appears in.
 
 **Design is minimal.** Black line on white, no ornament. New artwork should be
 SVG, drawn with `stroke="currentColor"` and no fills, so it can be redrawn.
@@ -86,6 +91,7 @@ web host separately. Pushing to GitHub updates the CDN, not the site.
 
 Manual FTP (FileZilla). Upload `index.html`, `.htaccess`, `robots.txt`,
 `sitemap.xml`, `css/`, `js/`, `i18n/`, `data/`, `font/`, `image/`, `assets/`,
-`customer/`, `Sayfit-Tuner/`.
+`work/`, `customer/`, `Sayfit-Tuner/`.
 
-Do not upload `docs/`, `projects/`, `build/`, `update_projects.*` or `*.cdr`.
+Do not upload `docs/`, `tools/`, `projects/`, `build/`, `update_projects.*` or
+`*.cdr`.
