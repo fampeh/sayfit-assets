@@ -306,9 +306,16 @@ function initSlider(root, projectData) {
 
     // A mostly-vertical gesture is the visitor scrolling the page, not
     // turning the carousel. Hand it back.
+    //
+    // A plain "deltaY > deltaX" reads a real finger's natural wobble at the
+    // very start of an intended horizontal swipe as a vertical one - a
+    // couple of stray px of vertical drift while the horizontal delta is
+    // still tiny was enough to hand the whole gesture to page scroll. Vast
+    // majority of true vertical scrolls clear this by a wide margin; a
+    // horizontal drag with a little wobble doesn't.
     if (!state.isScrollingVertically &&
-        Math.abs(deltaY) > Math.abs(deltaX) &&
-        Math.abs(deltaY) > 6) {
+        Math.abs(deltaY) > Math.abs(deltaX) * 1.4 &&
+        Math.abs(deltaY) > 10) {
       state.isScrollingVertically = true;
       state.isDragging = false;
       carousel.classList.remove('dragging');

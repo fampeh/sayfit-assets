@@ -57,8 +57,6 @@ function updateActiveNav() {
 }
 
 export function handleScroll() {
-  document.body.classList.toggle('scrolled', window.scrollY > 40);
-
   if (landing) {
     const triggerY = landing.offsetTop + landing.offsetHeight * 0.75;
     document.body.classList.toggle('at-content', window.scrollY >= triggerY);

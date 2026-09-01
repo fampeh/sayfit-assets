@@ -31,7 +31,12 @@ Desktop.ini
 .idea/
 
 # --- Local-only ---------------------------------------------------------------
-.claude/
+# `.claude/*`, not `.claude/`: a directory-level ignore stops git from looking
+# inside it at all, which would make the negation below a no-op.
+.claude/*
+# ...except project skills, which are meant to travel with the repo, not stay
+# machine-local. See docs/DECISIONS.md, 2026-08-23.
+!.claude/skills/
 node_modules/
 *.log
 .env

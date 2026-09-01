@@ -3,6 +3,7 @@ import sys
 import re
 import os
 import json
+import traceback
 from pathlib import Path
 
 # ---------- Settings ----------
@@ -17,21 +18,45 @@ IMG_EXTS = {'.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'}
 VID_EXTS = {'.mp4', '.webm', '.mov'}
 
 # ---------- Helpers ----------
+def exit_with_error(message: str):
+    """Prints error message and waits for user input before exiting."""
+    print(f"\n[ERROR] {message}")
+    input("\nPress Enter to exit...")
+    sys.exit(1)
+
 def natural_sort_key(s):
     return [int(text) if text.isdigit() else text.lower() for text in re.split(r'(\d+)', s)]
 
-def run_git(command, cwd=None):
-    result = subprocess.run(command, cwd=cwd or SCRIPT_DIR, shell=True,
-                            capture_output=True, text=True, encoding="utf-8")
-    if result.returncode != 0:
-        print(f"ERROR: Git command failed:\n  {command}\n{result.stderr}")
-        sys.exit(1)
+def run_git(command, cwd=None, allow_failure=False):
+    """Executes a git command safely using argument list."""
+    if isinstance(command, str):
+        cmd_list = command.split()
+    else:
+        cmd_list = command
+
+    try:
+        result = subprocess.run(
+            cmd_list,
+            cwd=cwd or SCRIPT_DIR,
+            capture_output=True,
+            text=True,
+            encoding="utf-8"
+        )
+    except FileNotFoundError:
+        exit_with_error("Git executable was not found. Please ensure Git is installed and added to PATH.")
+
+    if result.returncode != 0 and not allow_failure:
+        cmd_str = " ".join(cmd_list) if isinstance(cmd_list, list) else command
+        exit_with_error(f"Git command failed:\n  Command: {cmd_str}\n  Details: {result.stderr.strip()}")
+    
     return result.stdout.strip()
 
 def get_next_tag():
-    tags = run_git("git tag").split("\n")
+    output = run_git(["git", "tag"])
+    tags = output.split("\n") if output else []
     highest = (0, 0)
     for tag in tags:
+        tag = tag.strip()
         m = re.match(r"^v(\d+)\.(\d+)$", tag)
         if m:
             major, minor = int(m.group(1)), int(m.group(2))
@@ -84,8 +109,7 @@ def load_existing_data():
 
 def build_new_projects(existing_projects: dict) -> dict:
     if not WORK_DIR.exists():
-        print("ERROR: projects/work/ folder not found.")
-        sys.exit(1)
+        exit_with_error("projects/work/ folder not found.")
     new_projects = {}
     for cat_dir in sorted(WORK_DIR.iterdir()):
         if not cat_dir.is_dir():
@@ -144,8 +168,13 @@ def switch_cdn_to_main():
         json.dump(data, f, ensure_ascii=False, indent=2)
         f.write("\n")
     print(f"cdnBase updated to {MAIN_CDN}")
-    run_git("git add -f data/projects.json")
-    run_git('git commit -m "Switch cdnBase to @main"')
+    
+    rel_data_path = str(DATA_FILE.relative_to(SCRIPT_DIR)).replace("\\", "/")
+    run_git(["git", "add", "-f", rel_data_path])
+    
+    status = run_git(["git", "status", "--porcelain"])
+    if status:
+        run_git(["git", "commit", "-m", "Switch cdnBase to @main"])
 
 # ---------- Modes ----------
 def mode_full_update():
@@ -172,26 +201,28 @@ def mode_full_update():
 
     print("\n--- Git operations ---")
     os.chdir(SCRIPT_DIR)
-    run_git("git add projects/")
-    run_git(f"git add -f {DATA_FILE.relative_to(SCRIPT_DIR)}")
+    run_git(["git", "add", "projects/"])
+    
+    rel_data_path = str(DATA_FILE.relative_to(SCRIPT_DIR)).replace("\\", "/")
+    run_git(["git", "add", "-f", rel_data_path])
 
-    status = run_git("git status --porcelain")
+    status = run_git(["git", "status", "--porcelain"])
     if not status:
         print("No changes to commit. All done.")
         return
 
-    if commit_msg is None:
+    if commit_msg is None or not commit_msg.strip():
         commit_msg = input("Enter commit message: ").strip()
         if not commit_msg:
             commit_msg = "Update project data and images"
 
-    run_git(f'git commit -m "{commit_msg}"')
-    run_git("git pull origin main --rebase")
-    run_git("git push origin main")
+    run_git(["git", "commit", "-m", commit_msg])
+    run_git(["git", "pull", "origin", "main", "--rebase"])
+    run_git(["git", "push", "origin", "main"])
     print("Pushed to main.")
 
-    run_git(f"git tag {next_tag}")
-    run_git(f"git push origin {next_tag}")
+    run_git(["git", "tag", next_tag])
+    run_git(["git", "push", "origin", next_tag])
     print(f"Tag {next_tag} created and pushed.")
 
     print("\n" + "="*50)
@@ -205,23 +236,24 @@ def mode_quick_push():
         commit_msg = " ".join(args)
 
     print("Staging changes in projects/ ...")
-    run_git("git add projects/")
+    run_git(["git", "add", "projects/"])
 
-    status = run_git("git status --porcelain")
+    status = run_git(["git", "status", "--porcelain"])
     if not status:
         print("No changes to commit.")
+        switch_cdn_to_main()
         return
 
-    if commit_msg is None:
+    if commit_msg is None or not commit_msg.strip():
         commit_msg = input("Enter commit message: ").strip()
         if not commit_msg:
             commit_msg = "Quick push project updates"
 
-    run_git(f'git commit -m "{commit_msg}"')
+    run_git(["git", "commit", "-m", commit_msg])
     print("Pulling latest changes...")
-    run_git("git pull origin main --rebase")
+    run_git(["git", "pull", "origin", "main", "--rebase"])
     print("Pushing to origin main...")
-    run_git("git push origin main")
+    run_git(["git", "push", "origin", "main"])
     print("Push successful.")
 
     switch_cdn_to_main()
@@ -236,7 +268,6 @@ def mode_update_json_only():
     old_data = load_existing_data()
     new_projects = build_new_projects(old_data.get("projects", {}))
 
-    # Keep the original cdnBase (or fallback to @main)
     current_base = old_data.get("cdnBase") or MAIN_CDN
     final_data = {
         "cdnBase": current_base,
@@ -268,9 +299,13 @@ def main():
         mode_update_json_only()
     else:
         print("Invalid choice. Exiting.")
-        sys.exit(1)
-
-    input("\nPress Enter to exit...")
+        return
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(f"\n[UNHANDLED ERROR] An unexpected error occurred: {e}")
+        traceback.print_exc()
+    finally:
+        input("\nPress Enter to exit...")

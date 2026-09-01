@@ -165,7 +165,7 @@
   font-size: 24px;
   font-weight: 800;
   color: #000000;
-  margin-bottom: 8px;
+  margin-bottom: 0;
 }
 
 .project-desc {
@@ -174,10 +174,21 @@
   line-height: 1.6;
 }
 
+/* Title and navigator sit in a row so the navigator's top always lines up
+   with the title's top, whatever the caption text does below it - it used
+   to be positioned by a fixed distance from the bottom of the whole caption
+   block, which drifted onto the photograph whenever the description was
+   short. See docs/DECISIONS.md, 2026-08-23. */
+.project-info-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
 .project-slider .polygon-nav {
-  position: absolute;
-  bottom: 140px;
-  right: 0px;
+  flex: 0 0 70px;
   width: 70px;
   height: 70px;
   display: flex;

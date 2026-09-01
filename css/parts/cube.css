@@ -83,9 +83,18 @@ body.float-on .scene.active .scene-float {
   cursor: grab;
 }
 
-/* The cube is driven frame by frame from requestAnimationFrame, so it must
-   never have a CSS transition of its own fighting the loop. The one exception
-   is the scripted intro turn. */
+/* This short transition is what makes the cube feel fluid under the hand.
+   The rAF loop sets a new angle every frame; the transition smooths between
+   them, so the cube trails your cursor slightly instead of snapping to it.
+   It was removed once during a refactor and the cube immediately felt dry and
+   mechanical - it is not incidental, do not delete it.
+
+   It is switched OFF (via .no-cube-transition, from cube.js) whenever the cube
+   is turning itself under a spring, because two easings stacked on each other
+   turn to mush. */
+.cube { transition: transform 0.2s ease-out; }
+.cube.no-cube-transition { transition: none; }
+
 body.cube-intro .cube { transition: transform 1.6s var(--fade-ease); }
 
 .cube:active { cursor: grabbing; }

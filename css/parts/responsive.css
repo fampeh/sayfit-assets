@@ -4,10 +4,10 @@
    Ordered 900 / 720 / 768 / 420. The 768 block deliberately comes after 720:
    it inherits from it and overrides the carousel, so a phone gets both.
 
-   The pair of rules that used to fight over .project-info's padding-right
-   (20px in one block, 50px in the other) are gone - they were trying to make
-   room for the polygon navigator, which is absolutely positioned and could
-   never be made room for that way. See the 768 block.
+   The polygon navigator no longer needs a breakpoint override or padding
+   hacks to stay clear of the caption - it is a flex sibling of the project
+   title now (see .project-info-head in slider.css), so it holds its
+   position at every width on its own. See docs/DECISIONS.md, 2026-08-23.
 
    Mobile is where this site is actually read. Check any change at 360px
    before you check it at 1440px.
@@ -137,8 +137,16 @@
     padding-block: 64px;
   }
 
+  /* Horizontal padding only - the carousel's rotated side slides need this
+     margin to swing into without being clipped by body's overflow-x:hidden.
+     Dropping it to 0 (an earlier pass, chasing the same "give the photo its
+     width back" goal as .content-section above) made the front slide a bit
+     wider but silently clipped off the 3D wraparound entirely - the drum
+     read as a flat photo. 20px is the smallest that reliably keeps the
+     wraparound visible at 360px; still noticeably wider than the 248px this
+     was originally fixing. See docs/DECISIONS.md, 2026-08-23. */
   .project-slider {
-    padding: 0;
+    padding: 0 20px;
     margin-top: 18px;
   }
 
@@ -195,23 +203,6 @@
     aspect-ratio: 1 / 1;
     perspective: 300px;
     max-width: 100vw;
-  }
-
-  /* The navigator sits where it always has. An attempt to move it into the
-     photograph's corner was tried and reverted on 2026-08-18 - the studio
-     owner preferred the original placement. The caption paddings below exist
-     to keep the project title clear of it; leave them together. */
-  .project-slider .polygon-nav {
-    bottom: 100px;
-    right: -10px;
-  }
-
-  .project-slider .project-info {
-    padding-right: 20px;
-  }
-
-  .project-info {
-    padding-right: 50px;
   }
 }
 
