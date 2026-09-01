@@ -1,5 +1,5 @@
 {
-  "cdnBase": "https://cdn.jsdelivr.net/gh/fampeh/sayfit-assets@main/",
+  "cdnBase": "https://cdn.jsdelivr.net/gh/fampeh/sayfit-assets@v1.12/",
   "projects": {
     "sculpture": [
       {
@@ -381,6 +381,251 @@
           {
             "type": "image",
             "src": "projects/work/sculpture/Rostam-&-Sohrab/R (16).jpg"
+          }
+        ]
+      }
+    ],
+    "tailor-made-glasses": [
+      {
+        "year": "",
+        "title": "Arman",
+        "desc": "",
+        "media": [
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/arman/cover.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/arman/1.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/arman/2.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/arman/3.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/arman/4.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/arman/5.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/arman/6.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/arman/7.jpg"
+          }
+        ]
+      },
+      {
+        "year": "",
+        "title": "Binoo",
+        "desc": "",
+        "media": [
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/binoo/cover.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/binoo/1.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/binoo/2.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/binoo/3.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/binoo/4.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/binoo/5.jpg"
+          }
+        ]
+      },
+      {
+        "year": "",
+        "title": "Haddad",
+        "desc": "",
+        "media": [
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Haddad/cover.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Haddad/1.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Haddad/2.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Haddad/3.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Haddad/4.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Haddad/5.jpg"
+          }
+        ]
+      },
+      {
+        "year": "",
+        "title": "Hamze Heydarifar",
+        "desc": "",
+        "media": [
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Hamze Heydarifar/cover.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Hamze Heydarifar/1.jpg"
+          }
+        ]
+      },
+      {
+        "year": "",
+        "title": "Mohsen Seyfi",
+        "desc": "",
+        "media": [
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Mohsen Seyfi/cover.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Mohsen Seyfi/1.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Mohsen Seyfi/2.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Mohsen Seyfi/3.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Mohsen Seyfi/4.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Mohsen Seyfi/5.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Mohsen Seyfi/6.jpg"
+          }
+        ]
+      },
+      {
+        "year": "",
+        "title": "Nazizu",
+        "desc": "",
+        "media": [
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/nazizu/cover.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/nazizu/1.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/nazizu/2.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/nazizu/3.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/nazizu/4.jpg"
+          }
+        ]
+      },
+      {
+        "year": "",
+        "title": "Ramin Gomari",
+        "desc": "",
+        "media": [
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Ramin Gomari/cover.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Ramin Gomari/1.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Ramin Gomari/2.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/Ramin Gomari/3.jpg"
+          }
+        ]
+      },
+      {
+        "year": "",
+        "title": "Rouz",
+        "desc": "",
+        "media": [
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/rouz/cover.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/rouz/2.jpg"
+          }
+        ]
+      },
+      {
+        "year": "",
+        "title": "Talur",
+        "desc": "",
+        "media": [
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/talur/cover.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/talur/1.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/talur/2.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/talur/3.jpg"
+          },
+          {
+            "type": "image",
+            "src": "projects/work/tailor-made-glasses/talur/4.jpg"
           }
         ]
       }
