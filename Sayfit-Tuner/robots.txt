@@ -1,5 +1,0 @@
-# Bekuk — everything here is public and there is nothing to keep out.
-User-agent: *
-Allow: /
-
-Sitemap: https://bekuk.ir/sitemap.xml

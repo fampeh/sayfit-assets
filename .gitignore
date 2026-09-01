@@ -1,43 +1,10 @@
-# =============================================================================
-# Sayfit Studio — what git tracks
-#
-# This repo has TWO jobs now:
-#   1. Publish media assets to jsDelivr  (projects/, data/projects.json)
-#   2. Version the website source code   (index.html, css/, js/, i18n/, docs/…)
-#
-# Job 2 was added on 2026-08-18. Before that, `*` was ignored and the site
-# code lived only on disk with no history. See docs/DECISIONS.md.
-#
-# Everything is tracked by default; list exclusions below.
-# =============================================================================
+# Ignore everything by default
+*
 
-# --- Build artefacts: regenerable, large, never commit -----------------------
-build/
-dist/
-*.exe
-*.spec
-__pycache__/
-*.pyc
-
-# --- OS / editor noise -------------------------------------------------------
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-.DS_Store
-._*
-*.swp
-*~
-.vscode/
-.idea/
-
-# --- Local-only ---------------------------------------------------------------
-# `.claude/*`, not `.claude/`: a directory-level ignore stops git from looking
-# inside it at all, which would make the negation below a no-op.
-.claude/*
-# ...except project skills, which are meant to travel with the repo, not stay
-# machine-local. See docs/DECISIONS.md, 2026-08-23.
-!.claude/skills/
-node_modules/
-*.log
-.env
-.env.*
+# Keep only essential files
+!.gitignore
+!update_projects.py
+!data/
+!data/projects.json
+!projects/
+!projects/**

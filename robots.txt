@@ -1,5 +1,0 @@
-# Sayfit Studio. Everything here is a public portfolio; nothing to keep out.
-User-agent: *
-Allow: /
-
-Sitemap: https://sayfit.ir/sitemap.xml
