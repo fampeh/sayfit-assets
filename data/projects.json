@@ -1,5 +1,5 @@
 {
-  "cdnBase": "https://cdn.jsdelivr.net/gh/fampeh/sayfit-assets@v1.12/",
+  "cdnBase": "https://cdn.jsdelivr.net/gh/fampeh/sayfit-assets@v1.13/",
   "projects": {
     "sculpture": [
       {
@@ -258,7 +258,7 @@
           },
           {
             "type": "video",
-            "src": "projects/work/sculpture/Endless-elements/VID_20240903_173748.mp4"
+            "src": "projects/work/sculpture/Endless-elements/VID_20240903_173748_compressed.mp4"
           }
         ]
       },
