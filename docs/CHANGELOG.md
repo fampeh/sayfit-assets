@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-27 — About section preview
+
+- Added an inline disclosure for the long About copy in English and Persian.
+- The collapsed state now shows two complete paragraphs with natural wrapping beside the portrait; Show more reveals the remaining copy.
+- Reviewed the local desktop layout visually in both languages.
+
 ## 2026-09-27 — Documentation aligned with the current source
 
 - Updated the architecture and SEO guides to use the six current Work categories and the public `/work/eyewear/` and `/work/photography/` routes.
