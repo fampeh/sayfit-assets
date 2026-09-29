@@ -1,5 +1,15 @@
 # Decisions
 
+## 2026-09-29 — Home cube screen-space edges
+
+- Root cause: transformed one-pixel face borders and thin 3D edge primitives caused rasterization artifacts; overlapping face borders produced thick bars.
+- Rejected face borders as visible edges, `outline`, gradient-per-face, independent CSS 3D edges and thicker 3D strips. The earlier gradient experiment remains rolled back.
+- The six CSS 3D faces keep their content and interaction with transparent borders; a screen-space 2D SVG draws the twelve unique edges.
+- The first SVG implementation could lag because CSS continued transitioning between event-driven SVG updates. The fix samples the rendered cube pose in the existing animation frame, including during drag, without a second loop or changing the motion transition.
+- Rear-edge visibility now accounts for the finite perspective camera; the earlier `normal.z > 0` test exposed rear edges before a side face emerged from behind the front face.
+- Owner manually verified the final version in real Firefox and reported PASS. Finding status: Closed / Resolved.
+- The header's mini navigation cube retains its separate borders and is outside this change.
+
 ## 2026-09-27 — About section disclosure
 
 - The About section uses an inline Show more / Show less control in English and Persian.
@@ -110,7 +120,7 @@
 - Empty category pages are generated for Visual identity, Jewelry and Painting so links and SEO URLs remain stable before media arrives.
 - The Home category carousel uses a simple numeric position instead of the polygon navigator. Project carousel button direction remains intentionally unchanged.
 - The language switch loses its visible border; keyboard focus is indicated with a text underline.
-- Cube face borders were replaced with four one-pixel background gradients because intersecting transformed borders rendered as thick black bars and Firefox leaked shadow edges from hidden back faces.
+- Historical experiment: cube face borders were temporarily replaced with four one-pixel background gradients because intersecting transformed borders rendered as thick black bars and Firefox leaked shadow edges from hidden back faces. That approach was later rolled back; the issue was ultimately resolved with the screen-space SVG edge overlay recorded above.
 
 ## Deferred
 
@@ -121,7 +131,7 @@
 
 - مالک گزارش کرد اصلاح آزمایشی لبه‌های مکعب، ظاهر کلی آن را به‌هم زده و نسخهٔ قبلی بهتر بوده است.
 - gradientهای لبه و پنهان‌سازی هندسی وجه‌های پشت حذف شدند و مکعب به `border` یک‌پیکسلی و رفتار قبلی برگشت.
-- باگ لبهٔ مکعب در Edge و Firefox فعلاً باز می‌ماند تا راه‌حلی پیدا شود که هندسه و ظاهر اصلی را تغییر ندهد.
+- وضعیت تاریخی: باگ لبهٔ مکعب در آن زمان باز ماند. Finding در ۲۰۲۶-۰۹-۲۹ با SVG دوبعدی، همگام‌سازی animation و visibility آگاه از perspective حل شد؛ مالک در Firefox واقعی PASS داد.
 - رنگی‌شدن خودکار وجه فعال اسلایدر حذف شد؛ تمام تصاویر به‌طور پیش‌فرض خاکستری‌اند و فقط روی دستگاه دارای hover رنگی می‌شوند.
 
 ## Git boundary

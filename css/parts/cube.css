@@ -1,0 +1,403 @@
+/* =============================================================================
+   The landing cube - the site's main navigation.
+   ========================================================================== */
+
+.landing {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  position: relative;
+  padding: 100px 6vw 80px;
+}
+
+/* --- Preloader ----------------------------------------------------------- */
+
+.site-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.18s ease-out, visibility 0.18s ease-out;
+}
+
+.site-preloader.site-preloader--hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.intro-seen .site-preloader { display: none; }
+.intro-seen .scene { transition: none; }
+.intro-seen .logo-stage .stroke,
+.intro-seen .logo-stage .char {
+  animation: none !important;
+  opacity: 1;
+  stroke-dashoffset: 0;
+}
+.intro-seen .logo-stage .stroke { stroke-width: var(--stroke-thick); }
+
+.site-preloader__cube-wrapper {
+  perspective: 210px;
+}
+
+.site-preloader__cube {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg);
+  transition: transform 0.56s cubic-bezier(0.34, 1.35, 0.64, 1);
+  will-change: transform;
+}
+
+.preloader-face {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  background: rgba(255, 255, 255, 0.12);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.preloader-front   { transform: translateZ(22px); }
+.preloader-back    { transform: rotateY(180deg) translateZ(22px); }
+.preloader-right   { transform: rotateY(90deg) translateZ(22px); }
+.preloader-left    { transform: rotateY(-90deg) translateZ(22px); }
+.preloader-top     { transform: rotateX(90deg) translateZ(22px); }
+.preloader-bottom  { transform: rotateX(-90deg) translateZ(22px); }
+
+/* --- Scene & Cube --------------------------------------------------------- */
+
+.scene {
+  width: var(--size);
+  height: var(--size);
+  perspective: 1000px;
+  opacity: 0;
+  transform: scale(0.92);
+  filter: blur(8px);
+  transition: opacity 1.8s var(--fade-ease),
+              transform 1.8s var(--fade-ease),
+              filter 1.8s var(--fade-ease);
+  touch-action: none;
+  will-change: opacity, transform, filter;
+  position: relative;
+  z-index: 1;
+}
+
+.scene.active {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+
+.scene.settled {
+  filter: none;
+  will-change: auto;
+}
+
+.scene-float {
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.cube-edge-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: visible;
+  color: var(--ink);
+  pointer-events: none;
+}
+
+.cube-edge-overlay line {
+  stroke: currentColor;
+  stroke-width: 1px;
+  stroke-linecap: round;
+}
+
+body.intro-stroke-off .scene > .cube-edge-overlay {
+  opacity: 0;
+}
+
+body.float-on .scene.active .scene-float {
+  animation: float 6.5s ease-in-out infinite;
+}
+
+body.float-on .scene.active > .cube-edge-overlay {
+  animation: float 6.5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.cube {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg);
+  cursor: grab;
+  transition: transform 0.2s ease-out;
+}
+
+.cube.no-cube-transition { transition: none !important; }
+
+body.cube-intro .cube { transition: transform 1.6s var(--fade-ease); }
+
+.cube:active { cursor: grabbing; }
+
+.face {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 500;
+  font-size: clamp(18px, 3.6vw, 24px);
+  cursor: pointer;
+  user-select: none;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: background 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+              color 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+              opacity 0.8s ease;
+}
+
+body.intro-stroke-off .face {
+  pointer-events: none;
+  border-color: transparent !important;
+  transition: none !important;
+}
+
+body.intro-stroke-off .landing { pointer-events: none; }
+
+.face-home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .face:hover { background: #000000; color: #ffffff; }
+  .face-home:hover { background: #f0f0f0; color: var(--ink); }
+  body.cube-intro .face:hover { background: #ffffff; color: var(--ink); }
+  body.cube-intro .face-home:hover { background: #ffffff; color: var(--ink); }
+  body.cube-intro .cube.hovering .face { opacity: 1; }
+  .cube.hovering .face { opacity: 0.4; transition: opacity 0.6s ease; }
+  .cube.hovering .face:hover { opacity: 1; }
+}
+
+.face.active { background: #000000; color: #ffffff; }
+.face-home.active { background: #f0f0f0; color: var(--ink); }
+.face:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+
+.face-title {
+  position: relative;
+  z-index: 2;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.35s ease;
+}
+
+.face.has-sub.active .face-title,
+.face.has-sub:focus-within .face-title {
+  transform: scale(0.85);
+  opacity: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .face.has-sub:hover .face-title {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+}
+
+.submenu {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  opacity: 0;
+  transform: translateY(calc(-50% + 15px));
+  transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+              transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.face.has-sub.active .submenu,
+.face.has-sub:focus-within .submenu {
+  opacity: 1;
+  transform: translateY(-50%);
+  pointer-events: auto;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .face.has-sub:hover .submenu {
+    opacity: 1;
+    transform: translateY(-50%);
+    pointer-events: auto;
+  }
+}
+
+.submenu-item {
+  background: none;
+  border: 0;
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: inherit;
+  cursor: pointer;
+  padding: 4px 10px;
+  text-align: center;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), text-shadow 0.4s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .submenu-item:hover,
+  .submenu-item:focus-visible {
+    text-decoration: none;
+    transform: scale(1.08);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+}
+
+.front   { transform: rotateY(0deg)   translateZ(var(--half)); }
+.back    { transform: rotateY(180deg) translateZ(var(--half)); }
+.right   { transform: rotateY(90deg)  translateZ(var(--half)); }
+.left    { transform: rotateY(-90deg) translateZ(var(--half)); }
+.top     { transform: rotateX(90deg)  translateZ(var(--half)); }
+.bottom  { transform: rotateX(-90deg) translateZ(var(--half)); }
+
+/* --- The logo drawn on the home face -------------------------------------- */
+
+.logo-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+}
+
+.logo-sign {
+  width: 50%;
+  max-height: 50%;
+  overflow: visible;
+}
+
+.stroke {
+  fill: none;
+  stroke: var(--ink);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: var(--stroke-thin);
+}
+
+/* --- کنترل اجرای انیمیشن‌های لوگو --- */
+.serif-top,
+.open,
+.serif-bottom,
+.closed,
+.char {
+  animation-play-state: paused !important;
+}
+
+.logo-stage.animate .serif-top,
+.logo-stage.animate .open,
+.logo-stage.animate .serif-bottom,
+.logo-stage.animate .closed,
+.logo-stage.animate .char {
+  animation-play-state: running !important;
+}
+
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes thicken {
+  0%   { stroke-width: var(--stroke-thin); }
+  55%  { stroke-width: calc(var(--stroke-thick) + 0.25px); }
+  100% { stroke-width: var(--stroke-thick); }
+}
+
+.serif-top {
+  animation: draw var(--serif-dur) var(--draw-ease) forwards,
+             thicken var(--thick-dur) var(--liquid-ease) forwards var(--draw-end);
+}
+
+.open {
+  animation: draw var(--open-dur) var(--draw-ease) forwards calc(var(--serif-dur) - var(--overlap)),
+             thicken var(--thick-dur) var(--liquid-ease) forwards var(--draw-end);
+}
+
+.serif-bottom {
+  animation: draw var(--serif-dur) var(--draw-ease) forwards calc(var(--serif-dur) + var(--open-dur) - (var(--overlap) * 2)),
+             thicken var(--thick-dur) var(--liquid-ease) forwards var(--draw-end);
+}
+
+.closed {
+  animation: draw var(--close-dur) var(--draw-ease) forwards calc((var(--serif-dur) * 2) + var(--open-dur) - (var(--overlap) * 3)),
+             thicken var(--thick-dur) var(--liquid-ease) forwards var(--draw-end);
+}
+
+.sayfit-logotype {
+  width: 110%;
+  height: auto;
+  max-height: 25%;
+  overflow: visible;
+}
+
+.sayfit-logotype text {
+  fill: #999999;
+  stroke: #999999;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: 800;
+  font-size: 38px;
+  letter-spacing: 0.12em;
+  stroke-width: 0;
+  text-anchor: middle;
+  text-transform: none !important;
+}
+
+.char {
+  opacity: 0;
+  animation: weightBounce 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.char:nth-child(1) { animation-delay: calc(var(--type-start) + (var(--char-stagger) * 0)); }
+.char:nth-child(2) { animation-delay: calc(var(--type-start) + (var(--char-stagger) * 1)); }
+.char:nth-child(3) { animation-delay: calc(var(--type-start) + (var(--char-stagger) * 2)); }
+.char:nth-child(4) { animation-delay: calc(var(--type-start) + (var(--char-stagger) * 3)); }
+.char:nth-child(5) { animation-delay: calc(var(--type-start) + (var(--char-stagger) * 4)); }
+.char:nth-child(6) { animation-delay: calc(var(--type-start) + (var(--char-stagger) * 5)); }
+
+@keyframes weightBounce {
+  0%   { opacity: 0; stroke-width: 0px;   transform: scale(0.95); }
+  10%  { opacity: 1; }
+  40%  { stroke-width: 3.5px; transform: scale(1.02); }
+  100% { opacity: 1; stroke-width: 0px;   transform: scale(1); }
+}

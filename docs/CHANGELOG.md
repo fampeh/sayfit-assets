@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-29 — Home cube edge rendering resolved
+
+- Kept the six CSS 3D faces and replaced visible face borders with a one-pixel screen-space SVG wireframe, resolving Firefox edge rasterization artifacts.
+- Fixed SVG synchronization by sampling the rendered cube pose in the existing animation loop, preserving the CSS transition and adding no second loop.
+- Made rear-edge visibility perspective-aware so hidden back edges do not show through the front face at shallow angles.
+- Owner manually verified the final behavior in real Firefox and reported PASS. Finding closed.
+
 ## 2026-09-27 — About section preview
 
 - Added an inline disclosure for the long About copy in English and Persian.
