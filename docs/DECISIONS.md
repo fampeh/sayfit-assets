@@ -10,6 +10,14 @@
 - Owner manually verified the final version in real Firefox and reported PASS. Finding status: Closed / Resolved.
 - The header's mini navigation cube retains its separate borders and is outside this change.
 
+## 2026-09-28 — Privacy-preserving Sayfit telemetry
+
+- Added one shared frontend telemetry module for the Home page and generated Work/project pages.
+- Each page load sends one `first_visit` event to the same-origin `/api/telemetry/v1` endpoint.
+- The first trusted click, key press, mouse-wheel scroll or touch start sends one `first_engaged` event; listeners are removed immediately afterwards.
+- Requests contain only the event field, omit credentials and referrer, and use no identifiers, storage, retries, queues or analytics dependency.
+- Sayfit currently has no manifest, service worker or installed-PWA mode, so `first_pwa_open` is not emitted.
+
 ## 2026-09-27 — About section disclosure
 
 - The About section uses an inline Show more / Show less control in English and Persian.

@@ -7,6 +7,14 @@
 - Made rear-edge visibility perspective-aware so hidden back edges do not show through the front face at shallow angles.
 - Owner manually verified the final behavior in real Firefox and reported PASS. Finding closed.
 
+## 2026-09-28 — Sayfit telemetry and release package
+
+- Added `js/modules/telemetry.js` and initialized it from `js/main.js` and `js/project-page.js`.
+- Added privacy-preserving `first_visit` and `first_engaged` events for `/api/telemetry/v1`.
+- Kept payloads to one `event` field and omitted credentials and referrer; no visitor IDs, cookies, storage, retries, queues or analytics packages were added.
+- Confirmed that Sayfit has no PWA support, so `first_pwa_open` is not sent.
+- Rebuilt and verified the FileZilla-ready `deploy/` package with the standard deployment script.
+
 ## 2026-09-27 — About section preview
 
 - Added an inline disclosure for the long About copy in English and Persian.
