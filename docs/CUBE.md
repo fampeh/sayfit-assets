@@ -70,6 +70,14 @@ SVG با pose واقعی مکعب در همان حلقهٔ animation انجام 
 فاصلهٔ واقعی perspective را در نظر می‌گیرد. مالک نسخهٔ نهایی را در Firefox واقعی
 دستی بررسی کرده و Finding را PASS اعلام کرده است؛ وضعیت: بسته / حل‌شده.
 
+## Desktop Landing drag and auto-scroll (2026-09-30)
+
+**Status: Closed / Resolved.** The owner manually tested this implementation and reported PASS.
+
+Desktop dragging is available across the Landing area, not only on the cube. Native browser drag and text selection could otherwise take over a vertical mouse gesture and cause page auto-scroll. During an active mouse drag, the window move handler prevents the native default and a capture-phase dragstart handler blocks browser drag initiation. A temporary cube-mouse-dragging class disables selection only for the duration of that gesture; page scrolling is not locked.
+
+Pitch resistance ramps in after 56 degrees and approaches the hard -90/+90 degree limit. Vertical inertia is damped more strongly near the limit, while movement back toward the centre remains direct. The drag remains active until release rather than disengaging at the limit. Releasing beyond 62 degrees triggers a short recoil of up to 4.5 degrees toward the centre, with a floor at 56 degrees. The existing movement threshold keeps a stationary click available for face navigation.
+
 ## Hover motion (2026-09-13)
 
 Motion matches `old/SayfitWebsite/js/script.js`: 250ms hover intent, 0.12 per-frame focus/return interpolation, 0.02-degree arrival tolerance, 0.92 inertia decay and 0.4 drag sensitivity. Idle rotation adds 0.08 degrees of yaw and 0.03 degrees of pitch per frame. There is no spring or recoil.

@@ -1,5 +1,13 @@
 # Decisions
 
+## 2026-09-30 — Close Home cube Desktop drag / auto-scroll finding
+
+- Root cause: native browser drag and text selection behavior could intercept a Desktop Landing drag and scroll the page.
+- The fix preserves Landing-wide drag and suppresses native drag/selection only while the mouse gesture is active; it does not lock page scrolling.
+- Vertical pitch resistance now ramps toward the hard ±90° limit, with stronger vertical velocity damping near the limit. Inward movement remains responsive, and the gesture no longer auto-disengages before mouseup.
+- Releasing near the pitch limit applies a short recoil. The existing click threshold and face navigation remain intact.
+- Owner manually tested the final Desktop drag behavior and reported PASS. Finding status: Closed / Resolved.
+
 ## 2026-09-29 — Home cube screen-space edges
 
 - Root cause: transformed one-pixel face borders and thin 3D edge primitives caused rasterization artifacts; overlapping face borders produced thick bars.

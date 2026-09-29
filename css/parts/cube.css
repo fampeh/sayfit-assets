@@ -157,6 +157,11 @@ body.cube-intro .cube { transition: transform 1.6s var(--fade-ease); }
 
 .cube:active { cursor: grabbing; }
 
+body.cube-mouse-dragging,
+body.cube-mouse-dragging * {
+  user-select: none;
+}
+
 .face {
   position: absolute;
   inset: 0;

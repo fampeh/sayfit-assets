@@ -54,12 +54,12 @@ const INTRO_ROTATE = prefersReducedMotion ? 0 : 1600;
 const DRAG_THRESHOLD = 8;      // px of travel before a press stops being a click
 const HOVER_INTENT_DELAY = 250; // ms, matching old/SayfitWebsite/js/script.js
 
-/* The only motion constraint added to the legacy behaviour: no overturning. */
+/* Vertical drag resistance, hard pitch safety limit and local recoil tuning. */
 const PITCH_LIMIT = 90;
-const PITCH_SOFT = 52;
-const PITCH_RELUCTANT = 62;
-const PITCH_REST = 34;
-const RECOIL_LERP = 0.06;
+const PITCH_RESISTANCE_START = 56;
+const PITCH_RECOIL_START = 62;
+const RECOIL_DISTANCE = 4.5;
+const RECOIL_LERP = 0.1;
 const FOCUS_LERP = 0.12;
 const FOCUS_SETTLED = 0.02;
 
@@ -246,9 +246,10 @@ function initWireframe() {
 
 let rotX = 0, rotY = 0;
 let velX = 0, velY = 0;
-let dragging = false;
+let dragState = 'idle'; // idle | dragging
 let lastX = 0, lastY = 0;
 let dragDistance = 0;
+let recoilPending = false;
 let autoSpin = false;
 
 let targetRotX = 0, targetRotY = 0;
@@ -289,24 +290,50 @@ function clampPitch(value) {
   return Math.max(-PITCH_LIMIT, Math.min(PITCH_LIMIT, value));
 }
 
+/** Remaining pitch mobility falls smoothly as the cube approaches either pole. */
+function pitchMobility(pitch) {
+  const progress = Math.max(0, Math.abs(pitch) - PITCH_RESISTANCE_START) /
+    (PITCH_LIMIT - PITCH_RESISTANCE_START);
+  return Math.max(0.015, Math.exp(-4.2 * progress * progress));
+}
+
 function movePitch(delta) {
-  const next = rotX + delta;
-  // Resist only outward movement; moving back toward the centre stays direct.
-  if (Math.abs(next) <= PITCH_SOFT || Math.abs(next) <= Math.abs(rotX)) {
-    return clampPitch(next);
+  if (!delta) return rotX;
+
+  // Integrate in small input steps so one fast mouse event cannot skip the
+  // resistance ramp. Inward movement stays direct; only outward movement is
+  // reduced. This is math only and performs no layout reads.
+  const steps = Math.max(1, Math.ceil(Math.abs(delta)));
+  const step = delta / steps;
+  let pitch = rotX;
+  for (let index = 0; index < steps; index += 1) {
+    const next = pitch + step;
+    const outward = Math.abs(next) > Math.abs(pitch);
+    pitch = clampPitch(pitch + step * (outward ? pitchMobility(pitch) : 1));
   }
-  const start = Math.max(PITCH_SOFT, Math.abs(rotX));
-  const distance = Math.abs(next) - start;
-  return Math.sign(next) * (PITCH_LIMIT - (PITCH_LIMIT - start) *
-    Math.exp(-distance / (PITCH_LIMIT - PITCH_SOFT)));
+  return pitch;
+}
+
+function pitchInertiaRetention(pitchDelta) {
+  if (!pitchDelta || Math.abs(rotX + pitchDelta) <= Math.abs(rotX)) return 1;
+  // Outward pitch energy is absorbed progressively, while inward recovery and
+  // yaw keep the existing inertia decay.
+  return 0.65 + 0.35 * pitchMobility(rotX);
 }
 
 function startRecoil() {
-  if (isFocusingFace || isReturningFromFocus || Math.abs(rotX) <= PITCH_RELUCTANT) return;
+  if (isFocusingFace || isReturningFromFocus || Math.abs(rotX) <= PITCH_RECOIL_START) {
+    recoilPending = false;
+    return;
+  }
   isRecoiling = true;
+  recoilPending = false;
   autoSpin = false;
-  velX = velY = 0;
-  targetRotX = Math.sign(rotX) * PITCH_REST;
+  velX = 0;
+  targetRotX = Math.sign(rotX) * Math.max(
+    PITCH_RESISTANCE_START,
+    Math.abs(rotX) - RECOIL_DISTANCE
+  );
   setSmoothing(false);
   if (prefersReducedMotion) {
     rotX = targetRotX;
@@ -348,7 +375,7 @@ export function closeAllFaces() {
 
 export function resetCube() {
   clearTimeout(hoverIntentTimer);
-  dragging = false;
+  clearDragState();
   isRecoiling = false;
   rotX = DEFAULT_ROT_X;
   rotY = DEFAULT_ROT_Y;
@@ -401,7 +428,7 @@ function focusFace(face) {
 
     autoSpin = false;
     velX = velY = 0;
-    dragging = false;
+    clearDragState();
     setSmoothing(false);
   }
 
@@ -436,7 +463,13 @@ function unfocusCube() {
 
 /* -- Dragging --------------------------------------------------------------- */
 
-function startDrag(x, y) {
+function clearDragState({ preserveRecoil = false } = {}) {
+  dragState = 'idle';
+  if (!preserveRecoil) recoilPending = false;
+  document.body.classList.remove('cube-mouse-dragging');
+}
+
+function startDrag(x, y, source = 'mouse') {
   clearTimeout(hoverIntentTimer);
   if (isFocusingFace || isReturningFromFocus || isRecoiling) {
     isRecoiling = false;
@@ -446,24 +479,27 @@ function startDrag(x, y) {
   }
   pendingFaceScroll = null;
   autoSpin = false;
-  dragging = true;
+  dragState = 'dragging';
+  recoilPending = false;
+  if (source === 'mouse') document.body.classList.add('cube-mouse-dragging');
   lastX = x;
   lastY = y;
   dragDistance = 0;
 }
 
 function moveDrag(x, y) {
-  if (!dragging) return;
+  if (dragState !== 'dragging') return;
 
   const dx = x - lastX;
   const dy = y - lastY;
   dragDistance += Math.abs(dx) + Math.abs(dy);
 
+  const requestedPitchDelta = -dy * DRAG_SENSITIVITY;
+  const previousPitch = rotX;
   velY = dx * DRAG_SENSITIVITY;
-  velX = dy * DRAG_SENSITIVITY;
-
   rotY += velY;
-  rotX = movePitch(-velX);
+  rotX = movePitch(requestedPitchDelta);
+  velX = -(rotX - previousPitch);
   render();
 
   lastX = x;
@@ -471,9 +507,14 @@ function moveDrag(x, y) {
 }
 
 function endDrag() {
-  if (!dragging) return;
-  dragging = false;
-  startRecoil();
+  if (dragState === 'idle') return;
+
+  if (dragState === 'dragging') {
+    const pitchDelta = -velX;
+    const movingInward = pitchDelta * Math.sign(rotX) < 0;
+    recoilPending = Math.abs(rotX) >= PITCH_RECOIL_START && !movingInward;
+    clearDragState({ preserveRecoil: true });
+  }
 }
 
 /* -- The loop --------------------------------------------------------------- */
@@ -485,9 +526,12 @@ function step() {
   // while pointer events are driving the cube and this loop skips state work.
   if (smoothingEnabled) updateWireframe();
 
-  if (!dragging) {
+  if (dragState !== 'dragging') {
     if (isRecoiling) {
       rotX += (targetRotX - rotX) * RECOIL_LERP;
+      velY *= INERTIA_DECAY;
+      if (Math.abs(velY) < 0.01) velY = 0;
+      if (velY) rotY += velY;
       if (Math.abs(targetRotX - rotX) < FOCUS_SETTLED) {
         rotX = targetRotX;
         isRecoiling = false;
@@ -514,16 +558,22 @@ function step() {
         rotX = movePitch(DRIFT_PITCH);
       }
 
-      velX *= INERTIA_DECAY;
+      velX *= INERTIA_DECAY * pitchInertiaRetention(-velX);
       velY *= INERTIA_DECAY;
       if (Math.abs(velX) < 0.01) velX = 0;
       if (Math.abs(velY) < 0.01) velY = 0;
 
       if (velX || velY) {
         rotY += velY;
-        rotX = movePitch(-velX);
-        startRecoil();
+        const pitchDelta = -velX;
+        rotX = movePitch(pitchDelta);
+        if (Math.abs(rotX) >= PITCH_RECOIL_START &&
+            pitchDelta * Math.sign(rotX) > 0) {
+          recoilPending = true;
+        }
       }
+
+      if (recoilPending && velX === 0) startRecoil();
 
       render();
     }
@@ -587,7 +637,7 @@ function runIntroSequence(skipIntro = false, delay = INTRO_DELAY) {
 function bindFace(face) {
   if (isDesktop) {
     face.addEventListener('mouseenter', () => {
-      if (dragging) return;
+      if (dragState !== 'idle') return;
       clearTimeout(hoverIntentTimer);
       hoverIntentTimer = setTimeout(() => {
         cube.classList.add('hovering');
@@ -603,7 +653,7 @@ function bindFace(face) {
 
   face.addEventListener('click', (event) => {
     // A press that travelled is a drag, not a click.
-    if (dragDistance > DRAG_THRESHOLD) return;
+    if (event.detail > 0 && dragDistance > DRAG_THRESHOLD) return;
 
     const subItem = event.target.closest('.submenu-item');
     if (subItem) {
@@ -685,10 +735,16 @@ export function initCube({ skipIntro = false, deferIntro = false } = {}) {
         endDrag();
         return;
       }
+      if (dragState === 'dragging' && event.cancelable) event.preventDefault();
       moveDrag(event.clientX, event.clientY);
     });
     window.addEventListener('mouseup', endDrag);
     window.addEventListener('blur', endDrag);
+    window.addEventListener('mouseleave', (event) => {
+      // Keep a held drag alive as the pointer leaves the viewport. If the
+      // button is already up, clean up in case mouseup happened off-window.
+      if (!(event.buttons & 1)) endDrag();
+    });
 
     cube.addEventListener('mouseleave', () => {
       clearTimeout(hoverIntentTimer);
@@ -702,11 +758,11 @@ export function initCube({ skipIntro = false, deferIntro = false } = {}) {
       return;
     }
     const touch = event.touches[0];
-    startDrag(touch.clientX, touch.clientY);
+    startDrag(touch.clientX, touch.clientY, 'touch');
   }, { passive: true });
 
   cube.addEventListener('touchmove', (event) => {
-    if (!dragging) return;
+    if (dragState !== 'dragging') return;
     // Only claim the gesture once it is clearly a turn, so a vertical flick
     // that happens to start on the cube still scrolls the page.
     if (dragDistance > 5 && event.cancelable) event.preventDefault();
@@ -716,11 +772,9 @@ export function initCube({ skipIntro = false, deferIntro = false } = {}) {
 
   cube.addEventListener('touchend', endDrag);
   cube.addEventListener('touchcancel', endDrag);
-  cube.addEventListener('dragstart', (event) => {
-    event.preventDefault();
-    endDrag();
-  });
-  window.addEventListener('dragend', endDrag);
+  window.addEventListener('dragstart', (event) => {
+    if (dragState === 'dragging') event.preventDefault();
+  }, { capture: true });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) endDrag();
   });
