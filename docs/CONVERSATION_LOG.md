@@ -1,5 +1,18 @@
 # گزارش گفت‌وگو و مسیر تصمیم‌گیری
 
+## اجرای Finding ناپایداری Hover / Focus مکعب Home — ۲۰۲۶-۰۹-۳۰
+
+- مالک ابتدا خواست هیچ کدی تغییر نکند و فقط فایل‌های لازم برای بررسی کامل مشخص شوند. فایل‌های shell و wiring (`index.html`, `js/main.js`)، کنترلر Cube و وابستگی‌های مستقیمش، و CSS مکعب/توکن‌ها/واکنش‌گرا/هدر فهرست شدند. سپس بنا به درخواست مالک، همان فایل‌ها با مسیر نسبی در یک ZIP خارج از ریپو تحویل شدند.
+- در اجرای Finding، baseline الزام‌شده دوباره بررسی شد: شاخه `main` و HEAD برابر `46492a4063ccf2fb718a14a691583ec0d6c3d4fa` بود؛ فقط `js/modules/cube.js` و `css/parts/cube.css` در working tree تغییر داشتند. قبل از ویرایش، هر دو فایل در `C:\Users\BulBul\Desktop\HomeCube-hover-backup-20260930-01` پشتیبان‌گیری شدند.
+- تشخیص این بود که Face سه‌بعدی متحرک می‌تواند زیر pointer ثابت جابه‌جا شود؛ بنابراین descendant hit-test و `scene mouseleave` نشان‌دهندهٔ قصد موس نیستند. شرط `scene.matches(':hover')` هنگام commit و پاک‌شدن Candidate در hit-test خالی نیز edge hover را ناپایدار می‌کرد.
+- طبق تصمیم معماری مالک، کنترلر با intent latch، Candidate Envelope منجمد ۱۸ پیکسلی و Hold Envelope محدود به Face و مسیر focus بازنویسی شد. Hold از ۱۲ نمونهٔ مسیر چهار رأس Face استفاده می‌کند، با rect فعلی Face union می‌شود و ۲۴ پیکسل حاشیه می‌گیرد. تشخیص حرکت از مقایسهٔ `clientX` و `clientY` است؛ switch به Face دیگر نیازمند hit واقعی و حداقل ۶ پیکسل حرکت است.
+- مسیر واحد window mouse-move، exits صریح برای خروج پنجره/blur/hidden/scroll و helper واحد release اضافه شد. Drag، Focus engine، SVG wireframe، markup، CSS visual، click/keyboard/touch و reduced-motion flow عمداً تغییر طراحی ندادند؛ CSS stateهای موجود در WIP حفظ شدند.
+- بررسی‌های ایستا `node --check js/modules/cube.js` و `git diff --check` موفق شدند. صفحهٔ Preview محلی بارگذاری شد، اما کنترل‌های آن pointer-only movement در اختیار نگذاشتند؛ سناریوهای رفتاری به‌عنوان آزموده‌نشده در `docs/TESTING.md` ثبت شدند و Finding باز ماند تا مالک در Chrome/Firefox/Edge دستی تست کند.
+- مالک پس از این گزارش صریحاً مستندسازی کامل، commit و ساخت Deploy تازه را خواست و مشخص کرد آپلود FileZilla را خودش انجام می‌دهد. این کار فقط بستهٔ محلی `deploy/` را آماده می‌کند و هیچ آپلودی به سرور انجام نمی‌دهد.
+- مالک سپس اعلام کرد همهٔ سناریوها را دستی تست کرده و PASS می‌دهد. Finding در `DECISIONS.md`، `CUBE.md` و `TESTING.md` بسته ثبت شد؛ نام و نسخهٔ مرورگرهای استفاده‌شده مشخص نشده است.
+- اجرای `tools/prepare-deploy.ps1` موفق شد: ۳۶ صفحهٔ تولیدی بازسازی شدند، sitemap شامل ۴۴ URL شد و بستهٔ `deploy/` شامل ۱۱۸ فایل hash-verified است. هیچ آپلودی انجام نشد؛ انتقال FileZilla بر عهدهٔ مالک است.
+- در بازبینی نهایی پس از گزارش PASS، همگام‌سازی anchor در شاخهٔ لغو Candidate/حفظ Hold اصلاح شد تا switch بعدی همچنان آستانهٔ ۶ پیکسل را رعایت کند. این اصلاح فقط ایستا بررسی شد و پس از آن بستهٔ Deploy دوباره ساخته شد؛ این شاخهٔ جزئی جداگانه در Preview قابل آزمون نبود.
+
 ## بستن Finding لبه‌های مکعب Home — ۲۰۲۶-۰۹-۲۹
 
 - آزمایش‌ها نشان دادند borderهای یک‌پیکسلی روی Faceهای چرخیده و هم‌پوشانی آن‌ها در CSS 3D باعث artifactهای Firefox می‌شد. border، outline، آزمایش gradient-per-face، نوارهای مستقل CSS 3D و ضخیم‌ترکردن یال‌ها راه‌حل نهایی نشدند.

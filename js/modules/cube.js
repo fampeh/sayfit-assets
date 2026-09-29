@@ -53,6 +53,10 @@ const INTRO_ROTATE = prefersReducedMotion ? 0 : 1600;
 
 const DRAG_THRESHOLD = 8;      // px of travel before a press stops being a click
 const HOVER_INTENT_DELAY = 250; // ms, matching old/SayfitWebsite/js/script.js
+const HOVER_CANDIDATE_MARGIN = 18;
+const HOVER_HOLD_MARGIN = 24;
+const HOVER_SWITCH_DISTANCE = 6;
+const HOVER_PATH_SAMPLES = 12;
 
 /* Vertical drag resistance, hard pitch safety limit and local recoil tuning. */
 const PITCH_LIMIT = 90;
@@ -263,6 +267,15 @@ let savedAutoSpin = false;
 
 let pendingFaceScroll = null; // { target: string, isMobile: boolean }
 let hoverIntentTimer = null;
+let hoverCandidateFace = null;
+let hoverFocusedFace = null;
+let hoveredSubmenuItem = null;
+let hoverCandidateEnvelope = null;
+let hoverHoldEnvelope = null;
+let lastHoverPointerX = null;
+let lastHoverPointerY = null;
+let hoverIntentAnchorX = null;
+let hoverIntentAnchorY = null;
 let smoothingEnabled = true;
 
 /* -- Maths ------------------------------------------------------------------ */
@@ -374,7 +387,7 @@ export function closeAllFaces() {
 }
 
 export function resetCube() {
-  clearTimeout(hoverIntentTimer);
+  clearHoverState();
   clearDragState();
   isRecoiling = false;
   rotX = DEFAULT_ROT_X;
@@ -461,6 +474,232 @@ function unfocusCube() {
   }
 }
 
+function clearHoverCandidate() {
+  clearTimeout(hoverIntentTimer);
+  hoverIntentTimer = null;
+  if (hoverCandidateFace) hoverCandidateFace.classList.remove('hover-intent');
+  hoverCandidateFace = null;
+  hoverCandidateEnvelope = null;
+}
+
+function setHoveredSubmenuItem(item) {
+  if (hoveredSubmenuItem === item) return;
+  if (hoveredSubmenuItem) hoveredSubmenuItem.classList.remove('pointer-hover');
+  hoveredSubmenuItem = item;
+  if (hoveredSubmenuItem) hoveredSubmenuItem.classList.add('pointer-hover');
+}
+
+function clearHoverState() {
+  clearHoverCandidate();
+  hoverIntentAnchorX = null;
+  hoverIntentAnchorY = null;
+  setHoveredSubmenuItem(null);
+  if (hoverFocusedFace) hoverFocusedFace.classList.remove('hover-focused');
+  hoverFocusedFace = null;
+  hoverHoldEnvelope = null;
+  if (cube) cube.classList.remove('hovering');
+}
+
+function expandRect(rect, margin) {
+  return {
+    left: rect.left - margin,
+    top: rect.top - margin,
+    right: rect.right + margin,
+    bottom: rect.bottom + margin
+  };
+}
+
+function unionRects(first, second) {
+  return {
+    left: Math.min(first.left, second.left),
+    top: Math.min(first.top, second.top),
+    right: Math.max(first.right, second.right),
+    bottom: Math.max(first.bottom, second.bottom)
+  };
+}
+
+function rectContainsPoint(rect, x, y) {
+  return Boolean(rect && x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom);
+}
+
+function pointerDistanceFromIntentAnchor(x, y) {
+  if (hoverIntentAnchorX === null || hoverIntentAnchorY === null) return Infinity;
+  return Math.hypot(x - hoverIntentAnchorX, y - hoverIntentAnchorY);
+}
+
+function faceVertices(faceOrient) {
+  const vertices = [];
+  for (const first of [-1, 1]) {
+    for (const second of [-1, 1]) {
+      if (faceOrient === 'front') vertices.push({ x: first, y: second, z: 1 });
+      if (faceOrient === 'back') vertices.push({ x: first, y: second, z: -1 });
+      if (faceOrient === 'right') vertices.push({ x: 1, y: first, z: second });
+      if (faceOrient === 'left') vertices.push({ x: -1, y: first, z: second });
+      if (faceOrient === 'top') vertices.push({ x: first, y: -1, z: second });
+      if (faceOrient === 'bottom') vertices.push({ x: first, y: 1, z: second });
+    }
+  }
+  return vertices;
+}
+
+function buildHoverPathEnvelope(face, startRotX, startRotY) {
+  const target = FACE_ANGLES[face.dataset.faceOrient];
+  const vertices = faceVertices(face.dataset.faceOrient);
+  if (!target || vertices.length !== 4 || !wireframeWidth || !wireframeHeight) return null;
+
+  const targetRotY = nearestAngle(startRotY, target.rotY);
+  const half = Math.min(wireframeWidth, wireframeHeight) / 2;
+  const sceneRect = scene.getBoundingClientRect();
+  const scaleX = sceneRect.width / wireframeWidth;
+  const scaleY = sceneRect.height / wireframeHeight;
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+  for (let sample = 0; sample < HOVER_PATH_SAMPLES; sample += 1) {
+    const t = sample / (HOVER_PATH_SAMPLES - 1);
+    const rotXSample = startRotX + (target.rotX - startRotX) * t;
+    const rotYSample = startRotY + (targetRotY - startRotY) * t;
+    vertices.forEach((vertex) => {
+      const [localX, localY] = projectVertex(vertex, half, rotXSample, rotYSample);
+      minX = Math.min(minX, localX);
+      minY = Math.min(minY, localY);
+      maxX = Math.max(maxX, localX);
+      maxY = Math.max(maxY, localY);
+    });
+  }
+
+  const pathRect = {
+    left: sceneRect.left + minX * scaleX,
+    top: sceneRect.top + minY * scaleY,
+    right: sceneRect.left + maxX * scaleX,
+    bottom: sceneRect.top + maxY * scaleY
+  };
+  return expandRect(unionRects(pathRect, face.getBoundingClientRect()), HOVER_HOLD_MARGIN);
+}
+
+function releaseHoverFocus() {
+  const shouldReturn = Boolean(hoverFocusedFace);
+  clearHoverState();
+  if (shouldReturn) unfocusCube();
+}
+
+function requestHoverFocus(face, x, y) {
+  if (dragState !== 'idle' || faces.some((item) => item.classList.contains('active'))) {
+    clearHoverCandidate();
+    return;
+  }
+  if (hoverFocusedFace === face) {
+    clearHoverCandidate();
+    hoverIntentAnchorX = x;
+    hoverIntentAnchorY = y;
+    return;
+  }
+  if (hoverCandidateFace === face) return;
+
+  clearHoverCandidate();
+  hoverCandidateFace = face;
+  hoverCandidateEnvelope = expandRect(face.getBoundingClientRect(), HOVER_CANDIDATE_MARGIN);
+  hoverIntentAnchorX = x;
+  hoverIntentAnchorY = y;
+  face.classList.add('hover-intent');
+  hoverIntentTimer = window.setTimeout(() => {
+    hoverIntentTimer = null;
+    if (dragState !== 'idle' || hoverCandidateFace !== face ||
+        !rectContainsPoint(hoverCandidateEnvelope, lastHoverPointerX, lastHoverPointerY) ||
+        faces.some((item) => item.classList.contains('active'))) {
+      if (hoverCandidateFace === face) {
+        clearHoverCandidate();
+        if (hoverFocusedFace) {
+          if (rectContainsPoint(hoverHoldEnvelope, lastHoverPointerX, lastHoverPointerY)) {
+            hoverIntentAnchorX = lastHoverPointerX;
+            hoverIntentAnchorY = lastHoverPointerY;
+          } else {
+            releaseHoverFocus();
+          }
+        }
+      }
+      return;
+    }
+
+    const nextHoldEnvelope = buildHoverPathEnvelope(face, rotX, rotY) ||
+      expandRect(face.getBoundingClientRect(), HOVER_HOLD_MARGIN);
+    face.classList.remove('hover-intent');
+    hoverCandidateFace = null;
+    hoverCandidateEnvelope = null;
+    hoverIntentAnchorX = lastHoverPointerX;
+    hoverIntentAnchorY = lastHoverPointerY;
+    if (hoverFocusedFace) hoverFocusedFace.classList.remove('hover-focused');
+    hoverFocusedFace = face;
+    hoverHoldEnvelope = nextHoldEnvelope;
+    face.classList.add('hover-focused');
+    cube.classList.add('hovering');
+    focusFace(face);
+  }, HOVER_INTENT_DELAY);
+}
+
+function handleHoverPointerMove(event) {
+  const x = event.clientX;
+  const y = event.clientY;
+  const moved = lastHoverPointerX === null || x !== lastHoverPointerX || y !== lastHoverPointerY;
+  lastHoverPointerX = x;
+  lastHoverPointerY = y;
+  if (!moved || dragState !== 'idle' || (event.buttons & 1)) return;
+
+  const eventTarget = event.target instanceof Element ? event.target : null;
+  const submenuItem = eventTarget && eventTarget.closest('.submenu-item');
+  setHoveredSubmenuItem(submenuItem && cube.contains(submenuItem) ? submenuItem : null);
+
+  const face = eventTarget && eventTarget.closest('.face');
+  const hitFace = face && cube.contains(face) ? face : null;
+
+  if (faces.some((item) => item.classList.contains('active'))) {
+    clearHoverCandidate();
+    return;
+  }
+
+  if (hoverCandidateFace) {
+    if (hitFace === hoverFocusedFace && hoverFocusedFace) {
+      clearHoverCandidate();
+      hoverIntentAnchorX = x;
+      hoverIntentAnchorY = y;
+      return;
+    }
+    if (hitFace && hitFace !== hoverCandidateFace &&
+        pointerDistanceFromIntentAnchor(x, y) >= HOVER_SWITCH_DISTANCE) {
+      requestHoverFocus(hitFace, x, y);
+      return;
+    }
+    if (rectContainsPoint(hoverCandidateEnvelope, x, y)) return;
+
+    clearHoverCandidate();
+    if (hoverFocusedFace) {
+      if (rectContainsPoint(hoverHoldEnvelope, x, y)) {
+        hoverIntentAnchorX = x;
+        hoverIntentAnchorY = y;
+      } else {
+        releaseHoverFocus();
+      }
+    }
+    return;
+  }
+
+  if (hoverFocusedFace) {
+    if (hitFace === hoverFocusedFace) {
+      hoverIntentAnchorX = x;
+      hoverIntentAnchorY = y;
+      return;
+    }
+    if (hitFace && pointerDistanceFromIntentAnchor(x, y) >= HOVER_SWITCH_DISTANCE) {
+      requestHoverFocus(hitFace, x, y);
+      return;
+    }
+    if (rectContainsPoint(hoverHoldEnvelope, x, y)) return;
+    releaseHoverFocus();
+    return;
+  }
+
+  if (hitFace) requestHoverFocus(hitFace, x, y);
+}
+
 /* -- Dragging --------------------------------------------------------------- */
 
 function clearDragState({ preserveRecoil = false } = {}) {
@@ -470,7 +709,7 @@ function clearDragState({ preserveRecoil = false } = {}) {
 }
 
 function startDrag(x, y, source = 'mouse') {
-  clearTimeout(hoverIntentTimer);
+  clearHoverState();
   if (isFocusingFace || isReturningFromFocus || isRecoiling) {
     isRecoiling = false;
     isFocusingFace = false;
@@ -635,22 +874,6 @@ function runIntroSequence(skipIntro = false, delay = INTRO_DELAY) {
 /* -- Wiring ----------------------------------------------------------------- */
 
 function bindFace(face) {
-  if (isDesktop) {
-    face.addEventListener('mouseenter', () => {
-      if (dragState !== 'idle') return;
-      clearTimeout(hoverIntentTimer);
-      hoverIntentTimer = setTimeout(() => {
-        cube.classList.add('hovering');
-        focusFace(face);
-      }, HOVER_INTENT_DELAY);
-    });
-
-    face.addEventListener('mouseleave', () => {
-      clearTimeout(hoverIntentTimer);
-      cube.classList.remove('hovering');
-    });
-  }
-
   face.addEventListener('click', (event) => {
     // A press that travelled is a drag, not a click.
     if (event.detail > 0 && dragDistance > DRAG_THRESHOLD) return;
@@ -663,6 +886,7 @@ function bindFace(face) {
       return;
     }
 
+    clearHoverState();
     pendingFaceScroll = null;
     closeAllFaces();
     face.classList.add('active');
@@ -731,25 +955,28 @@ export function initCube({ skipIntro = false, deferIntro = false } = {}) {
       startDrag(event.clientX, event.clientY);
     });
     window.addEventListener('mousemove', (event) => {
-      if (!(event.buttons & 1)) {
-        endDrag();
+      if (event.buttons & 1) {
+        if (dragState === 'dragging' && event.cancelable) event.preventDefault();
+        moveDrag(event.clientX, event.clientY);
+        handleHoverPointerMove(event);
         return;
       }
-      if (dragState === 'dragging' && event.cancelable) event.preventDefault();
-      moveDrag(event.clientX, event.clientY);
+      if (dragState !== 'idle') endDrag();
+      handleHoverPointerMove(event);
     });
     window.addEventListener('mouseup', endDrag);
-    window.addEventListener('blur', endDrag);
+    window.addEventListener('blur', () => {
+      endDrag();
+      releaseHoverFocus();
+    });
     window.addEventListener('mouseleave', (event) => {
-      // Keep a held drag alive as the pointer leaves the viewport. If the
-      // button is already up, clean up in case mouseup happened off-window.
+      // Keep an active held drag alive outside the viewport. A held button
+      // without a Landing drag must still release any committed/candidate hover.
+      if (dragState === 'dragging' && (event.buttons & 1)) return;
       if (!(event.buttons & 1)) endDrag();
+      releaseHoverFocus();
     });
-
-    cube.addEventListener('mouseleave', () => {
-      clearTimeout(hoverIntentTimer);
-      unfocusCube();
-    });
+    window.addEventListener('scroll', releaseHoverFocus, { passive: true });
   }
 
   cube.addEventListener('touchstart', (event) => {
@@ -776,7 +1003,10 @@ export function initCube({ skipIntro = false, deferIntro = false } = {}) {
     if (dragState === 'dragging') event.preventDefault();
   }, { capture: true });
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) endDrag();
+    if (document.hidden) {
+      endDrag();
+      releaseHoverFocus();
+    }
   });
 
   faces.forEach(bindFace);

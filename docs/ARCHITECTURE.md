@@ -25,6 +25,34 @@ Sayfit یک سایت استاتیک با HTML، CSS و ES Modules است. build 
 - Home cube فقط عنوان وجه‌ها را دارد. زیرمنوهای دسته‌بندی در هدر باقی می‌مانند
   و وجه‌های Cube مستقیماً به سکشن‌های Home اسکرول می‌کنند.
 
+## Home cube Desktop Hover / Focus
+
+`js/modules/cube.js` owns cube motion and the desktop hover controller. Hover
+intent starts only on a real mouse move whose DOM target is one of the cube's
+faces. Pointer coordinates are tracked from successive `clientX` / `clientY`
+events; transformed face geometry is never polled to infer intent.
+
+The controller freezes two screen-space rectangles per interaction. The
+candidate rectangle is the acquired face's current bounding box expanded by
+18 px and protects the 250 ms intent delay against small movement and changing
+descendant hit-tests. Once a face is committed, the hold rectangle bounds that
+face's projected four vertices over 12 samples from the current pose to its
+focus pose, unions the current rendered face box, and expands by 24 px. It is
+computed once before focus starts and is not updated while the cube moves.
+Projection reuses the existing face-angle, shortest-yaw, perspective and
+wireframe helpers; it does not create another motion or geometry engine.
+
+Face switching requires a real mouse move onto a different face and at least
+6 px of movement from the intent anchor, then uses the same 250 ms delay. The
+previous focused face remains active during that pending switch. `initCube()`
+routes hover and drag through one window mouse-move listener so an active held
+drag retains priority and its existing default suppression. Viewport exit,
+window blur, hidden-document state and page scrolling release hover explicitly.
+
+The CSS hover-state classes remain in `css/parts/cube.css`; the visual design,
+Home markup, click/keyboard/touch navigation, Focus interpolation and SVG
+wireframe synchronization are independent of this controller change.
+
 ## قوانین مهم
 
 - فایل‌های `work/` generated هستند و نباید دستی ویرایش شوند.

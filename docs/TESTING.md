@@ -6,6 +6,51 @@ Start the local server with `start-server.bat` or:
 python -m http.server 8000
 ```
 
+## Home Cube Desktop Hover / Focus edge stability (2026-09-30)
+
+**Status: Closed / Resolved — owner manual PASS (2026-09-30).** The owner
+reported PASS after manually testing the requested behavior. Exact browser
+names/versions were not supplied. The local Browser Preview loaded the page
+and rendered the cube, but pointer-only event interaction was unavailable
+there. Keep these checks for future regression testing:
+
+1. Enter an exposed face edge slowly from the left, right, top and bottom;
+   hold the pointer still for 250 ms and confirm full focus without a twitch.
+2. Keep the pointer still while focus rotates the cube; geometry movement must
+   not release Hover.
+3. Apply 1–3 px of jitter near an edge; Candidate must survive inside its
+   frozen 18 px Candidate Envelope.
+4. Cross a face quickly and leave the Candidate Envelope before 250 ms;
+   Focus must not commit.
+5. Move outside the frozen face-specific 24 px Hold Envelope after Focus;
+   confirm exactly one return to the saved pose.
+6. Re-enter a face after release; Hover must arm normally again.
+7. Move intentionally to another face by at least 6 px; confirm a pending
+   candidate and the same 250 ms delay before switch.
+8. Confirm cube motion alone does not select another face.
+9. Leave the pointer still during auto-spin; confirm no false Candidate or
+   switch.
+10. Test Hover → Drag; Hover clears immediately and Drag takes priority.
+11. Test Drag → Release → Hover; a later real pointer move can arm Hover again.
+12. Drag from blank Landing space; Landing-wide drag must still work.
+13. Drag vertically near both pitch limits; Magnetic Resistance and reverse
+    movement while held must remain responsive.
+14. Confirm the page does not native-autoscroll during active desktop Drag.
+15. Click a face and confirm section navigation and active-state behavior.
+16. Test Enter, Space and Escape; keyboard behavior must remain intact.
+17. Scroll the page after Hover; Hover must release without blocking or
+    manipulating page scroll.
+18. Inspect SVG edges during Focus and Drag; confirm no desynchronization or
+    visibility change.
+19. If submenu markup is reintroduced, verify pointer-hover state tracks the
+    `.submenu-item` and parent Face without a false switch.
+
+The candidate and hold rectangles are intentionally frozen at acquisition and
+commit. The 2026-09-30 closure is based on the owner's manual PASS, not on
+syntax checks or Preview loading alone. A final switch-anchor bookkeeping
+adjustment was made after that report and passed static checks; its
+candidate-cancel-then-switch edge was not separately exercised in Preview.
+
 Verify:
 
 - Telemetry sends one `first_visit` per page load and one `first_engaged` after the first trusted interaction; each request body contains only `event` and uses `/api/telemetry/v1`.

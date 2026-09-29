@@ -1,5 +1,104 @@
 # Navigation Cube
 
+## Desktop Hover / Focus edge stability (2026-09-30)
+
+**Status: Closed / Resolved — owner manual PASS (2026-09-30).** The owner
+reported all behavior good after manual testing; exact browser names/versions
+were not specified. This finding is separate from Desktop Landing drag /
+auto-scroll, which remains Closed / Resolved.
+
+### Diagnosis and decision
+
+The cube faces are moving CSS 3D geometry. As a face rotates toward the user,
+its projection can move under a stationary pointer and change the descendant
+reported by hit-testing. A `mouseleave` from the scene can consequently reflect
+the transformed descendant hit-test rather than the pointer leaving the fixed
+scene rectangle. The former controller also required `scene.matches(':hover')`
+at commit time and cancelled its candidate when the current event target was
+not a face. Those checks confused geometry motion with pointer intent and
+caused a short focus followed by an immediate return.
+
+The owner-selected architecture is an intent latch plus two frozen, screen-space
+envelopes. Initial acquisition still requires a real mouse move onto a real
+`.face`; hover cannot start in blank scene space. A blank hit-test after
+acquisition does not itself cancel the candidate.
+
+### Candidate and switching
+
+- `HOVER_INTENT_DELAY` remains 250 ms.
+- On acquisition, the controller reads that face's `getBoundingClientRect()`
+  once and expands it 18 px in every direction. This Candidate Envelope is
+  frozen for that candidate.
+- The candidate survives changing face/descendant hit-tests while the actual
+  pointer remains inside that envelope. A real move outside it cancels the
+  candidate. A real hit on a different face can replace it after at least 6 px
+  of movement from the intent anchor.
+- Timer commit checks that the drag is idle, the same candidate remains,
+  there is no active face, and the last actual pointer position remains inside
+  the frozen Candidate Envelope. It performs no live hover confirmation.
+- When switching from a committed face, the old face stays focused while the
+  new 250 ms candidate is pending. Cancelling that candidate preserves the old
+  focus only while its Hold Envelope still contains the pointer; the switch
+  anchor is resynchronized at cancellation so the next switch still observes
+  the full 6 px threshold.
+
+### Face-specific Hold Envelope
+
+Before `focusFace()` starts, the controller gets the target from `FACE_ANGLES`
+and computes the same nearest yaw using `nearestAngle()`. It samples the
+current-to-target rotation at 12 evenly spaced values of `t` from 0 through 1.
+At each sample, the four vertices of the selected face are projected with the
+existing `projectVertex()` and `rotateVector()` math, current perspective, and
+scene dimensions. The resulting local bounds are converted to client space,
+unioned with the face's current rendered `getBoundingClientRect()` (to include
+any compositor/state offset), and expanded 24 px in each direction.
+
+This rectangle is Face-specific and covers only that face's actual path to its
+target. It is frozen: no animation-frame update, live polling, convex hull,
+polygon clipping or maximum envelope for the whole cube is used. The existing
+focus path runs unchanged, including its immediate target jump under reduced
+motion.
+
+### Pointer, release and preserved behavior
+
+Actual pointer movement is detected by comparing each window mouse event's
+`clientX` / `clientY` with the previous event. No `movementX` / `movementY`,
+scene `mousemove` / `mouseleave`, or `scene.matches(':hover')` check controls
+retention. Cube motion without actual pointer movement cannot change Hover
+state. Face switching needs both a real hit on another face and the 6 px
+threshold, then the same 250 ms delay.
+
+`releaseHoverFocus()` is the shared committed-hover exit path. It clears
+candidate and hold geometry, intent/focus classes, the cube hover class and
+submenu pointer state, then calls `unfocusCube()` once if a committed face was
+focused. Real exits are window leave (except a held active Landing drag), blur,
+hidden document and page scroll.
+
+Desktop hover shares the existing window mouse-move route with drag. While a
+mouse button is held, the previous `preventDefault()` and `moveDrag()` behavior
+keeps priority; drag start clears hover. Landing-wide drag, auto-scroll
+suppression, reverse motion, pitch limits/resistance, recoil and click threshold
+remain intact. Face click/navigation, Enter, Space, Escape, touch/mobile and
+reduced-motion behavior are retained. Submenu item pointer classes continue to
+be maintained for any future submenu markup.
+
+No SVG wireframe projection, visibility, animation-frame synchronization or
+visual styling was changed. The CSS state-class WIP was already present at the
+start of this finding and was preserved without visual changes.
+
+### Verification and closure
+
+`node --check js/modules/cube.js` and `git diff --check` passed. The local
+Browser Preview loaded the Home page and rendered the cube, but its available
+controls did not allow pointer-only movement. The owner subsequently reported
+a manual PASS for all requested behavior and the finding is closed on that
+owner report. Browser names and versions were not supplied. The detailed
+regression checklist remains in `TESTING.md` for future changes. Final source
+review after that report also resynchronized the pointer intent anchor when a
+pending switch is cancelled but the previous face remains held; this small
+bookkeeping adjustment passed static checks but was not separately exercised
+in the Browser Preview.
+
 ## Home cube edge rendering (2026-09-29)
 
 The six Home faces remain real CSS 3D elements and keep their existing content,

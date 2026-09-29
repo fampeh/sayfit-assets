@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-09-30 — Home cube Desktop Hover / Focus edge stability
+
+- Replaced geometry-sensitive scene hover and leave handling with a desktop pointer-intent controller driven by actual `clientX` / `clientY` changes.
+- Added a frozen 18 px candidate rectangle and a face-specific, frozen 24 px hold rectangle projected from the current pose to that face's focus target using 12 path samples and the existing cube projection math.
+- Kept the existing 250 ms intent delay. Face switches require a real pointer move to another face and a 6 px intent threshold; cube motion alone cannot switch or release hover.
+- Routed hover through the existing window mouse-move handler and preserved the active drag path. Added explicit hover release on viewport exit, blur, hidden document and page scroll.
+- Preserved the supplied CSS hover-state WIP. No CSS visual change, markup change, Focus-engine rewrite or SVG wireframe change was made for this fix.
+- Static JavaScript syntax and whitespace checks passed. Browser Preview loaded, but pointer-only behavior could not be exercised there. The owner then manually tested the behavior and reported PASS; finding closed. Exact browser names/versions were not supplied.
+- Built a fresh FileZilla-ready package with 118 hash-verified files and a sitemap containing 44 URLs. The package is for owner-managed upload; no server upload was performed.
+
 ## 2026-09-29 — Home cube edge rendering resolved
 
 - Kept the six CSS 3D faces and replaced visible face borders with a one-pixel screen-space SVG wireframe, resolving Firefox edge rasterization artifacts.
